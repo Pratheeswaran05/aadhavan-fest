@@ -25,6 +25,13 @@ const routes: Routes = [
    { path: 'students', 
     loadChildren: () => import('./features/students/students.module').then(m => 
     m.StudentsModule)
+   },
+
+
+
+   { path: 'shared', 
+    loadChildren: () => import('./shared/shared.module').then(m => 
+    m.SharedModule)
    }
 
   
