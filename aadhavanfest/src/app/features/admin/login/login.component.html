@@ -1,6 +1,6 @@
 <div class="bg-gray-500 h-screen bg-cover bg-center flex items-center justify-center">
     <div class="w-full p-6 bg-white border border-gray-200 rounded-lg backdrop-blur bg-opacity-60 max-w-sm shadow-lg">
-      <form class="space-y-4">
+      <form class="space-y-4" (ngSubmit)="login()">
         <button type="submit" class="flex ">
           <h5 class="text-xl font-medium text-gray-900 dark:text-white text-center">ADMIN LOGIN </h5>
         </button>
@@ -8,13 +8,13 @@
         <!-- Email Input -->
         <div>
           <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your Email</label>
-          <input type="email" name="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="name@company.com" required>
+          <input type="email" [(ngModel)]="email" name="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="name@company.com" required>
         </div>
         
          <!-- Password Input with Show/Hide Toggle -->
          <div class="relative">
           <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your Password</label>
-          <input [type]="showPassword ? 'text' : 'password'"  name="password" id="password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
+          <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" name="password" id="password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
           <!-- Eye Toggle Button -->
          <button type="button" (click)="togglePassword()" class="mb-2 pt-8 absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 dark:text-gray-300">
          <!-- Show SVG based on 'showPassword' -->
@@ -44,7 +44,7 @@
         <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
           Login to your account
         </button>
-  
+       
         <!-- Register Link -->
         <div class="text-sm font-medium text-gray-500 dark:text-gray-300 text-center">
           Not registered? <a class="text-blue-700 hover:underline dark:text-blue-500">Request account</a>

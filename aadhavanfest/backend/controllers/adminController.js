@@ -39,13 +39,20 @@ const registerAdmin = async (req, res) => {
 // Login Admin
 const loginAdmin = async (req, res) => {
     try {
-        const client = await pool.connect();
+        console.log("Request Body:", req.body); // Check what is received
+
         const { email, password } = req.body;
 
-        // Query admin by email
+        if (!email || !password) {
+            return res.status(400).json({ success: false, message: "Email and password are required" });
+        }
+
+        const trimmedEmail = email.trim(); // Prevents extra spaces
+
+        const client = await pool.connect();
         const result = await client.query({
             text: 'SELECT id, email, password_hash FROM admin_users WHERE email = $1',
-            values: [email]
+            values: [trimmedEmail]
         });
 
         client.release();
@@ -75,5 +82,6 @@ const loginAdmin = async (req, res) => {
         res.status(500).json({ success: false, message: "Server error", error: error.message });
     }
 };
+
 
 module.exports = { registerAdmin, loginAdmin };
