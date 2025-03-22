@@ -39,7 +39,7 @@ const registerAdmin = async (req, res) => {
 // Login Admin
 const loginAdmin = async (req, res) => {
     try {
-        console.log("Request Body:", req.body); // Check what is received
+        console.log("Received Login Request: ", req.body); // Logs received email/password
 
         const { email, password } = req.body;
 
@@ -58,13 +58,18 @@ const loginAdmin = async (req, res) => {
         client.release();
 
         if (result.rows.length === 0) {
+            console.log("Email not found:", trimmedEmail);
             return res.status(400).json({ success: false, message: 'Email not found' });
         }
 
         const admin = result.rows[0];
 
-        // Compare passwords
+        console.log("Stored Hashed Password:", admin.password_hash); // Log stored password
+
+        // Compare hashed passwords
         const isMatch = await bcrypt.compare(password, admin.password_hash);
+        console.log("Password Match Result:", isMatch);
+
         if (!isMatch) {
             return res.status(400).json({ success: false, message: 'Incorrect password' });
         }
