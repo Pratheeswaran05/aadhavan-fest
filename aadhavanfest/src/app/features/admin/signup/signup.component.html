@@ -1,1 +1,70 @@
-<p>signup works!</p>
+<div class="bg-gray-500 min-h-screen bg-cover bg-center p-4 flex items-center justify-center">
+    <div class="w-full max-w-2xl p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 bg-opacity-60 backdrop-blur">
+        <form class="space-y-6" (ngSubmit)="register()">            
+            <button type="submit" class="flex ">
+                <!-- <img src="/assets/logo/bgremoved-logo.svg" alt="logo" width="80" height="80" class="mt-[-7%]"> -->
+                <h2 class="text-xl font-semibold text-gray-900">Create a New Account</h2>
+              </button>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Full Name -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-gray-900">Full Name</label>
+                    <input type="text" [(ngModel)]="name" name="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Enter your Name" required>
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-gray-900">Your Email</label>
+                    <input type="email" [(ngModel)]="email" name="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="name@company.com" required>
+                </div>
+
+                <!-- Role Selection -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-gray-900">Role</label>
+                    <select [(ngModel)]="selectedRole" name="role" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <option value="teaching">Teaching Staff</option>
+                        <option value="non-teaching">Non-Teaching Staff</option>
+                        <option value="student">Student</option>
+                    </select>
+                </div>
+                
+                 <!-- Role ID (Dynamic Placeholder) -->
+                 <div>
+                    <label class="block mb-2 text-sm font-medium text-gray-900">{{ roleLabel }}</label>
+                    <input type="text" [(ngModel)]="roleId" name="id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" [placeholder]="rolePlaceholder" required>
+                </div>
+                
+                
+                <!-- Password -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-gray-900">Enter a password</label>
+                    <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" name="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Password" required>
+                </div>
+                
+                <!-- Confirm Password -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-gray-900">Confirm Password</label>
+                    <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="confirmPassword" name="confirmPassword" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Confirm Password" required>
+                    <div *ngIf="confirmPassword !== password && confirmPassword" class="text-red-500 text-sm">Passwords do not match!</div>
+                </div>
+            
+            <!-- Show Password Checkbox -->
+            <div class="flex items-center">
+                <input type="checkbox" (click)="togglePasswordVisibility()" [(ngModel)]="showPassword" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                <label class="ml-2 text-sm font-medium text-gray-900">Show Password</label>
+            </div>
+
+            <!-- Sign-Up Button -->
+            <div class="flex justify-center md:col-span-2">
+                <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    Register a New Admin account
+                </button>
+            </div>
+        </div>
+            <!-- Already Have an Account? -->
+            <div class="text-sm font-medium text-gray-500 text-center">
+                Already have an account? <a routerLink="/admin/login" class="text-blue-700 hover:underline">Back to Log in</a>
+            </div>
+        </form>
+    </div>
+</div>
