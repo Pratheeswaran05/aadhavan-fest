@@ -6,4 +6,3 @@ router.post('/login', loginAdmin); // Use POST for login
 router.post('/register', registerAdmin);
 
 module.exports = router;
-

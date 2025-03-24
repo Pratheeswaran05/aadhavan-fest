@@ -12,9 +12,10 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class LoginComponent {
 
-  showPassword: boolean = false; // Track password visibility
+  showPassword: boolean = false; // password visibility
   email = '';
   password = '';
+  errorMessage: string = '';
 
   constructor(
     private authService: AuthService,
