@@ -12,7 +12,16 @@ module.exports = {
         lightCream: "#FAF0CA",
         mustard: "#F4D35E",
         orange: "#EE964B",
-        red: "#F95738",
+        red1: "#F95738",
+        // color for header
+        primary: "#1a1a2e", // Dark navy background
+        secondary: "#16213e", // Slightly lighter navy
+        offwhite: "#f5f5f5",
+        dropdownBg: "#222831", // Dark dropdown background
+        hoverGold: "#d4af37", // Hover effect
+        pink: "#e91e63",
+        cyan: "#00bcd4",
+        blue: "#2196f3",
       },
       fontFamily: {
         sans: ['Poppins', ...defaultTheme.fontFamily.sans],
