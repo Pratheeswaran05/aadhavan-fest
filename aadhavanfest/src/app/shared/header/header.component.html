@@ -4,7 +4,7 @@
     <!-- Logo -->
     <div class="flex items-center space-x-2">
         <img src="assets/logo.png" alt="College Logo" class="h-12 w-12">
-        <span class="text-xl font-bold">Aadhavan Fest</span>
+        <span class="text-xl font-bold ml-4">Aadhavan Fest</span>
       </div>
 
     <!-- Desktop Navigation (Aligned to Right) -->
@@ -31,7 +31,7 @@
         <path fill-rule="evenodd" d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
       </svg>
             
-      <svg *ngIf="!menuOpen"xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+      <svg *ngIf="menuOpen"xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
       </svg>
       
@@ -42,7 +42,7 @@
 
 
   <!-- Mobile Menu -->
-  <ul class="font-bold text-gray-600 space-y-2">
+  <ul *ngIf="menuOpen" class="font-bold text-gray-600 space-y-2">
     <li *ngFor="let menu of menuItems">
       <div class="flex justify-between items-center cursor-pointer" (click)="toggleDropdown(menu.id)">
         <a class="block py-2" routerLink="{{ menu.route }}">{{ menu.name }}</a>
@@ -52,7 +52,7 @@
       </div>
       <ul *ngIf="expandedMenu === menu.id" class="pl-4 space-y-1">
         <li *ngFor="let subItem of menu.subItems">
-          <a class="block py-2 text-gray-700" href="#">{{ subItem }}</a>
+          <a class="block py-2 text-gray-500" href="#">{{ subItem }}</a>
         </li>
       </ul>
     </li>

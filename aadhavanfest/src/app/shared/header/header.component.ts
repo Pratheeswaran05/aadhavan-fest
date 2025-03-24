@@ -8,9 +8,10 @@ import { Router } from '@angular/router';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
-  menuOpen: boolean = false;
+  menuOpen= false;
   expandedMenu: string | null = null; // Change type to string | null
   
+  constructor(private router: Router) {}
   
 
   menuItems = [
