@@ -5,6 +5,7 @@ import { SharedRoutingModule } from './shared-routing.module';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
+import { RouterModule } from '@angular/router';
 
 
 @NgModule({
@@ -15,7 +16,9 @@ import { HeaderComponent } from './header/header.component';
   ],
   imports: [
     CommonModule,
-    SharedRoutingModule
-  ]
+    SharedRoutingModule,
+    RouterModule
+  ],
+  exports: [HeaderComponent]
 })
 export class SharedModule { }

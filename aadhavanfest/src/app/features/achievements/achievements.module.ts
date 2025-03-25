@@ -2,10 +2,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AchievementsRoutingModule } from './achievements-routing.module';
+import { AchievementsComponent } from './achievements/achievements.component';
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    AchievementsComponent
+  ],
   imports: [
     CommonModule,
     AchievementsRoutingModule

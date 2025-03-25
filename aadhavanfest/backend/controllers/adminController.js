@@ -127,4 +127,32 @@ const loginAdmin = async (req, res) => {
 };
 
 
-module.exports = { registerAdmin, loginAdmin };
+const getAdminProfile = async (req, res) => {
+    try {
+        console.log("Received request for admin profile with user ID:", req.user.id); // Log user ID
+
+        const client = await pool.connect();
+        const adminId = req.user.id;
+
+        const result = await client.query({
+            text: 'SELECT id, name, email FROM admin_users WHERE id = $1',
+            values: [adminId]
+        });
+
+        client.release();
+
+        if (result.rows.length === 0) {
+            console.error("Admin not found for ID:", adminId);
+            return res.status(404).json({ success: false, message: 'Admin not found' });
+        }
+
+        console.log("Admin profile fetched successfully:", result.rows[0]);
+        res.json({ success: true, admin: result.rows[0] });
+    } catch (error) {
+        console.error("Error fetching admin profile:", error); // Log full error
+        res.status(500).json({ success: false, message: "Server error", error: error.message });
+    }
+};
+
+
+module.exports = { registerAdmin, loginAdmin, getAdminProfile};

@@ -21,7 +21,8 @@ module.exports = {
         hoverGold: "#d4af37", // Hover effect
         pink: "#e91e63",
         cyan: "#00bcd4",
-        blue: "#2196f3",
+        blue1: "#2196f3",
+        white1: "E4EFE7",
       },
       fontFamily: {
         sans: ['Poppins', ...defaultTheme.fontFamily.sans],

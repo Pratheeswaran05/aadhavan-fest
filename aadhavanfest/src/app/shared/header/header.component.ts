@@ -18,8 +18,14 @@ export class HeaderComponent {
     { id: 'highlights', name: 'Highlights', route: '/highlights', subItems: ['Inside College', 'Outside College'] },
     { id: 'achievements', name: 'Achievements', route: '/achievements', subItems: ['District', 'State', 'National'] },
     { id: 'events', name: 'Events', route: '/events', subItems: ['Upcoming Events', 'Past Events'] },
+    { id: 'gallery', name: 'Gallery', route: '/gallery', subItems: ['Upcoming Events', 'Past Events'] },
     { id: 'college', name: 'College', route: '/college', subItems: ['About', 'Facilities', 'Clubs'] }
   ];
+
+  getFormattedRoute(menuRoute: string, subItem: string): string {
+    return `${menuRoute}/${subItem.toLowerCase().replace(/ /g, '-')}`;
+  }
+  
 
   toggleMenu() {
     this.menuOpen = !this.menuOpen;

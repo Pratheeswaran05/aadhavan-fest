@@ -4,13 +4,13 @@
     <!-- Logo -->
     <div class="flex items-center space-x-2">
         <img src="assets/logo.png" alt="College Logo" class="h-12 w-12">
-        <span class="text-xl font-bold ml-4">Aadhavan Fest</span>
+        <span class="text-xl font-semibold ml-4">Aadhavan Fest</span>
       </div>
 
     <!-- Desktop Navigation (Aligned to Right) -->
     <ul class="hidden lg:flex font-medium text-[#0c1a39] space-x-8 ml-auto">
       <li *ngFor="let menu of menuItems" class="group relative">
-        <a href="#" class="flex items-center hover:text-[#0066cc] transition duration-75">
+        <a [routerLink]="menu.route" class="flex items-center hover:text-[#0066cc] transition duration-75">
           {{ menu.name }}
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
@@ -18,7 +18,7 @@
         </a>
         <ul class="absolute right-0 w-48 bg-white border text-[#0c1a39] shadow-lg rounded-lg hidden group-hover:flex flex-col">
           <li *ngFor="let subItem of menu.subItems">
-            <a href="#" class="block px-4 py-2 hover:bg-gray-200">{{ subItem }}</a>
+            <a [routerLink]="getFormattedRoute(menu.route, subItem)"  class="block px-4 py-2 hover:bg-gray-200 font-normal">{{ subItem }}</a>
           </li>
         </ul>
       </li>
@@ -52,7 +52,7 @@
       </div>
       <ul *ngIf="expandedMenu === menu.id" class="pl-4 space-y-1">
         <li *ngFor="let subItem of menu.subItems">
-          <a class="block py-2 text-gray-500" href="#">{{ subItem }}</a>
+          <a [routerLink]="getFormattedRoute(menu.route, subItem)" class="block py-2 text-gray-500">{{ subItem }}</a>
         </li>
       </ul>
     </li>
