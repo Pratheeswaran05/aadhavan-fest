@@ -6,13 +6,11 @@ import { SignupComponent } from './signup/signup.component';
 import { AuthGuardService } from '../../core/auth-guard.service';
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuardService] }, // Protect Dashboard
-  { path: '', redirectTo: 'login', pathMatch: 'full' }, // Redirect `/admin` to `/admin/login`
-  {
-    path : 'signup',
-    component : SignupComponent
-  }
+  { path: 'login', component: LoginComponent }, 
+  { path: 'signup', component: SignupComponent }, 
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuardService] }, // Protected
+  { path: '**', redirectTo: 'login' }
+
 ];
 
 @NgModule({

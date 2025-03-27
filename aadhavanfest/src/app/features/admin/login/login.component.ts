@@ -12,9 +12,10 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class LoginComponent {
 
-  showPassword: boolean = false; // Track password visibility
+  showPassword: boolean = false; // password visibility
   email = '';
   password = '';
+  errorMessage: string = '';
 
   constructor(
     private authService: AuthService,
@@ -28,6 +29,8 @@ export class LoginComponent {
   }
 
   login() {
+    console.log('Logging in with:', this.email, this.password); // Debug
+
     this.authService.login({ email: this.email, password: this.password }).subscribe(
       (response) => {
         this.authService.setToken(response.token);
@@ -35,6 +38,7 @@ export class LoginComponent {
         this.router.navigate(['/admin/dashboard']);
       },
       (error) => {
+        console.error('Login error:', error); // Log error for debugging
         this.toastr.error('Invalid credentials', 'Login Failed');
       }
     );
