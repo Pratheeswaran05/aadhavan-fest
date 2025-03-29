@@ -11,18 +11,8 @@ export class AuthService {
   private apiUrl = 'http://localhost:5000/api/admin';
 
 
-  constructor(private http: HttpClient, private router: Router) {
-    
-  }
+  constructor(private http: HttpClient, private router: Router) {  }
 
-  // login(credentials: { email: string; password: string }): Observable<any> {
-  //   return this.http.post<{ token: string }>(`${this.apiUrl}/login`, credentials).pipe(
-  //     catchError(error => {
-  //       console.error('Login error:', error);
-  //       return throwError(() => new Error(error.message || 'Login failed'));
-  //     })
-  //   );
-  // }
   login(credentials: { email: string; password: string }): Observable<any> {
     console.log('Attempting login with:', credentials); // Log credentials (excluding password)
     
@@ -41,10 +31,6 @@ export class AuthService {
   setToken(token: string): void {
     localStorage.setItem('adminToken', token);
   }
-
-  // getToken(): string | null {
-  //   return localStorage.getItem('adminToken');
-  // }
 
   isLoggedIn(): boolean {
     const token = this.getToken();

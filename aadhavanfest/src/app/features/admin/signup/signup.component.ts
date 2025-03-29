@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../../../core/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-signup',
@@ -8,34 +10,36 @@ import { Component } from '@angular/core';
 })
 export class SignupComponent {
 
+  selectedRole: string = 'teaching';
   name: string = '';
   email: string = '';
-  selectedRole: string = 'student';
   roleId: string = '';
   password: string = '';
   confirmPassword: string = '';
-  showPassword: boolean = false;
 
-  // Dynamic labels and placeholders
-  roleLabel: string = 'Student ID';
-  rolePlaceholder: string = 'Enter your Student ID';
+  constructor(private authService: AuthService, private toastr: ToastrService) {}
 
-  constructor() {}
-
-  // Form submit method
   register() {
-    console.log('Registering:', {
+    if (this.password !== this.confirmPassword) {
+      this.toastr.error('Passwords do not match');
+      return;
+    }
+
+    const formData = {
       name: this.name,
       email: this.email,
       role: this.selectedRole,
       roleId: this.roleId,
-      password: this.password,
-    });
-  }
+      password: this.password
+    };
 
-  // Toggle password visibility
-  togglePasswordVisibility() {
-    this.showPassword = !this.showPassword;
+    this.authService.registerAdmin(formData).subscribe(
+      response => {
+        this.toastr.success('Signup Successful');
+      },
+      error => {
+        this.toastr.error('Signup Failed');
+      }
+    );
   }
 }
-

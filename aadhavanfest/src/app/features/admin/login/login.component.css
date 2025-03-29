@@ -1,5 +1,6 @@
 .container {
     height: 100vh; /* Full viewport height */
-    margin-top: -15%;
+    margin-top: -100px;
+    width: 100vw;
   }
   
