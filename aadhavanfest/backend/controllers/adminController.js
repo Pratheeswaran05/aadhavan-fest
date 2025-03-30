@@ -5,10 +5,15 @@ const pool = require('../config/db');
 // Register Admin
 const registerAdmin = async (req, res) => {
     try {
-        const client = await pool.connect();
-        const { email, password } = req.body;
+        const { name, email, role, roleId, password } = req.body;
 
-        // Check if the admin already exists
+        if (!name || !email || !role || !roleId || !password) {
+            return res.status(400).json({ success: false, message: "All fields are required" });
+        }
+
+        const client = await pool.connect();
+
+        // Check if admin already exists
         const existingAdmin = await client.query({
             text: 'SELECT id FROM admin_users WHERE email = $1',
             values: [email]
@@ -24,17 +29,21 @@ const registerAdmin = async (req, res) => {
 
         // Insert new admin
         const newAdmin = await client.query({
-            text: 'INSERT INTO admin_users (email, password_hash) VALUES ($1, $2) RETURNING id, email',
-            values: [email, hashedPassword]
+            text: 'INSERT INTO admin_users (name, email, role, role_id, password_hash) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, role, role_id',
+            values: [name, email, role, roleId, hashedPassword]
         });
 
         client.release();
         res.status(201).json({ success: true, message: "Admin registered successfully", admin: newAdmin.rows[0] });
+
     } catch (error) {
         console.error("Signup error:", error);
         res.status(500).json({ success: false, message: "Server error", error: error.message });
     }
 };
+
+
+
 
 // Login Admin
 const loginAdmin = async (req, res) => {
