@@ -12,6 +12,7 @@ export class DashboardComponent implements OnInit{
 
   isSidebarOpen = true;
   adminName: string = '';
+  selectedMenu: string = 'overview'; // default tab
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -19,6 +20,10 @@ export class DashboardComponent implements OnInit{
     this.isSidebarOpen = !this.isSidebarOpen;
   }
 
+  selectMenu(menu: string) {
+    this.selectedMenu = menu;
+  }
+  
 
   ngOnInit(): void {
     this.authService.getAdminName().subscribe({
