@@ -2,29 +2,34 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const AdminUser = require('../models/AdminUser');
 
-const SECRET_KEY = 'your_secret_key'; // Move to .env in real apps
-
 exports.registerAdmin = async (req, res) => {
     try {
-        console.log("Received request for admin profile with user ID:", req.user.id);
-        
-        const { email, password } = req.body;
-
-        const existingAdmin = await AdminUser.findOne({ where: { email } });
-        if (existingAdmin) {
-            return res.status(400).json({ message: 'Admin already exists' });
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const admin = await AdminUser.create({ email, password_hash: hashedPassword });
-
-        res.status(201).json({ id: admin.id, email: admin.email });
+      console.log("Received request for admin profile with user ID:", req.user?.id);
+  
+      const { name, email, password, role, roleId } = req.body;
+   
+      const existingAdmin = await AdminUser.findOne({ where: { email } });
+      if (existingAdmin) {
+        return res.status(400).json({ message: 'Admin already exists' });
+      }
+  
+      const hashedPassword = await bcrypt.hash(password, 10);
+  
+      const admin = await AdminUser.create({
+        name,
+        email,
+        role,
+        roleId,
+        password_hash: hashedPassword
+      });
+  
+      res.status(201).json({ id: admin.id, email: admin.email, name: admin.name, role: admin.role });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server error' });
+      console.error(err);
+      res.status(500).json({ message: 'Server error' });
     }
-};
-
+  };
+  
 exports.loginAdmin = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -35,7 +40,8 @@ exports.loginAdmin = async (req, res) => {
         const isMatch = await bcrypt.compare(password, admin.password_hash);
         if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
-        const token = jwt.sign({ id: admin.id }, SECRET_KEY, { expiresIn: '1h' });
+        const token = jwt.sign({ id: admin.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
 
         res.json({ token });
     } catch (err) {

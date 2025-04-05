@@ -8,4 +8,9 @@ import { Component } from '@angular/core';
 })
 export class HighlightsComponent {
 
+  selectedTab: string = 'inside';
+
+  selectTab(tab: string) {
+    this.selectedTab = tab;
+  }
 }

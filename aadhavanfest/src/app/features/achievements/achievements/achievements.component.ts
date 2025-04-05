@@ -7,5 +7,10 @@ import { Component } from '@angular/core';
   styleUrl: './achievements.component.css'
 })
 export class AchievementsComponent {
+  achievementTab: string = 'district';
+
+  selectAchievementTab(tab: string) {
+    this.achievementTab = tab;
+  }
 
 }

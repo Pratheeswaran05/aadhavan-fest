@@ -1,1 +1,54 @@
-<p>achievements works!</p>
+<div class="p-6">
+    <h1 class="text-3xl font-bold mb-6 text-center">Achievements</h1>
+  
+    <!-- Tabs -->
+    <div class="flex justify-center mb-6">
+      <button 
+        (click)="selectAchievementTab('district')" 
+        [ngClass]="achievementTab === 'district' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'"
+        class="px-4 py-2 mx-2 rounded-lg">
+        District
+      </button>
+      <button 
+        (click)="selectAchievementTab('state')" 
+        [ngClass]="achievementTab === 'state' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'"
+        class="px-4 py-2 mx-2 rounded-lg">
+        State
+      </button>
+      <button 
+        (click)="selectAchievementTab('national')" 
+        [ngClass]="achievementTab === 'national' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'"
+        class="px-4 py-2 mx-2 rounded-lg">
+        National
+      </button>
+    </div>
+  
+    <!-- Tab Contents -->
+    <div *ngIf="achievementTab === 'district'" class="tab-content">
+      <h2 class="text-2xl font-semibold mb-4">District Level Achievements</h2>
+      <ul class="list-disc list-inside space-y-2">
+        <li>District Debate Championship - 1st Prize</li>
+        <li>District Science Fair - Best Project Award</li>
+        <li>District Art Contest - Runner Up</li>
+      </ul>
+    </div>
+  
+    <div *ngIf="achievementTab === 'state'" class="tab-content">
+      <h2 class="text-2xl font-semibold mb-4">State Level Achievements</h2>
+      <ul class="list-disc list-inside space-y-2">
+        <li>State Sports Meet - Gold Medal in Basketball</li>
+        <li>State Technical Quiz - 2nd Position</li>
+        <li>State Cultural Fest - Best Drama Performance</li>
+      </ul>
+    </div>
+  
+    <div *ngIf="achievementTab === 'national'" class="tab-content">
+      <h2 class="text-2xl font-semibold mb-4">National Level Achievements</h2>
+      <ul class="list-disc list-inside space-y-2">
+        <li>National Innovation Challenge - Winner</li>
+        <li>National Youth Parliament - Best Speaker Award</li>
+        <li>National Arts Fest - Special Recognition</li>
+      </ul>
+    </div>
+  </div>
+  

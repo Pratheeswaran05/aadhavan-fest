@@ -6,12 +6,18 @@ const cors = require('cors');
 const adminRoutes = require('./routes/adminRoutes');
 const videoRoutes = require('./routes/videoRoutes');
 
+require('dotenv').config();
+
+
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
 app.use('/api/admin', adminRoutes);
 app.use('/api/videos', videoRoutes);
+
+
+// console.log('JWT Secret Key:', process.env.JWT_SECRET);
 
 // Sync sequelize and start server
 sequelize.sync().then(() => {

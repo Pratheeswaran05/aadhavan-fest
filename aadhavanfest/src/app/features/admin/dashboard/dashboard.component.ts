@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../core/auth.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../core/api.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,7 +24,7 @@ export class DashboardComponent implements OnInit{
   isUploading = false;
 
 
-  constructor(private authService: AuthService, private router: Router, private apiService: ApiService) {}
+  constructor(private authService: AuthService, private router: Router, private apiService: ApiService, private http: HttpClient) {}
 
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
@@ -35,11 +36,11 @@ export class DashboardComponent implements OnInit{
   
 
   ngOnInit(): void {
-    this.authService.getAdminName().subscribe({
+    this.authService.getAdmin().subscribe({
       // next: (data: string) => {
       //   this.adminName = data;
       next: (name) => {
-        this.adminName = name;  // ✅ Store admin name
+        this.adminName = name;  // Store admin name
         console.log('Admin Name:', this.adminName);
       },
       error: (error: Error) => {

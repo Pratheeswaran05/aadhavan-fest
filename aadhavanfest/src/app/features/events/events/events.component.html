@@ -1,0 +1,39 @@
+<div class="p-6">
+    <h1 class="text-3xl font-bold mb-6 text-center">Events</h1>
+  
+    <!-- Tabs -->
+    <div class="flex justify-center mb-6">
+      <button 
+        (click)="selectEventTab('post')" 
+        [ngClass]="eventTab === 'post' ? 'bg-purple-500 text-white' : 'bg-gray-300 text-black'"
+        class="px-4 py-2 mx-2 rounded-lg">
+        Post Event
+      </button>
+      <button 
+        (click)="selectEventTab('upcoming')" 
+        [ngClass]="eventTab === 'upcoming' ? 'bg-purple-500 text-white' : 'bg-gray-300 text-black'"
+        class="px-4 py-2 mx-2 rounded-lg">
+        Upcoming Event
+      </button>
+    </div>
+  
+    <!-- Tab Contents -->
+    <div *ngIf="eventTab === 'post'" class="tab-content">
+      <h2 class="text-2xl font-semibold mb-4">Post Event Highlights</h2>
+      <ul class="list-disc list-inside space-y-2">
+        <li>Annual Day 2025 - Huge Success 🎉</li>
+        <li>Tech Symposium 2025 - 600+ Participants</li>
+        <li>Blood Donation Camp - 300 Units Collected</li>
+      </ul>
+    </div>
+  
+    <div *ngIf="eventTab === 'upcoming'" class="tab-content">
+      <h2 class="text-2xl font-semibold mb-4">Upcoming Events</h2>
+      <ul class="list-disc list-inside space-y-2">
+        <li>Inter-College Sports Meet - May 2025</li>
+        <li>National Science Fair - June 2025</li>
+        <li>Cultural Fest 2025 - July 2025</li>
+      </ul>
+    </div>
+  </div>
+  

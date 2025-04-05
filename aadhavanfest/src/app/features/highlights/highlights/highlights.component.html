@@ -1,1 +1,39 @@
-<p>highlights works!</p>
+<div class="p-2">  
+    <!-- Tabs -->
+    <div class="flex justify-center mb-6">
+      <button 
+        (click)="selectTab('inside')" 
+        [ngClass]="selectedTab === 'inside' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'"
+        class="px-4 py-2 mx-2 rounded-lg">
+        Inside College
+      </button>
+      <button 
+        (click)="selectTab('outside')" 
+        [ngClass]="selectedTab === 'outside' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'"
+        class="px-4 py-2 mx-2 rounded-lg">
+        Outside College
+      </button>
+    </div>
+  
+    <!-- Tab Contents -->
+    <div *ngIf="selectedTab === 'inside'" class="tab-content">
+      <h2 class="text-2xl font-semibold mb-4">Inside College Highlights</h2>
+      <ul class="list-disc list-inside space-y-2">
+        <li>Annual Cultural Fest 2025 - A Grand Success!</li>
+        <li>Guest Lecture by Dr. A.P.J. Abdul Kalam Foundation.</li>
+        <li>Intra-college Dance and Drama Competitions.</li>
+        <li>Campus Cleanliness Drive.</li>
+      </ul>
+    </div>
+  
+    <div *ngIf="selectedTab === 'outside'" class="tab-content">
+      <h2 class="text-2xl font-semibold mb-4">Outside College Highlights</h2>
+      <ul class="list-disc list-inside space-y-2">
+        <li>Our Students Won First Prize at State-level Drama Competition.</li>
+        <li>Participation in Inter-College Techno-Cultural Fest.</li>
+        <li>Community Service Program with Local NGOs.</li>
+        <li>District Level Music Competition Finalists.</li>
+      </ul>
+    </div>
+  </div>
+  

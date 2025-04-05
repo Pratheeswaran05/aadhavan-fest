@@ -47,28 +47,28 @@ export class AuthService {
     return localStorage.getItem('adminToken');
   }
 
-getAdminName(): Observable<string> {
-  const token = this.getToken();
-  if (!token) {
-    console.error('No token found in localStorage');
-    return throwError(() => new Error('No token found'));
+  getAdmin(): Observable<string> {
+    const token = this.getToken();
+    if (!token) {
+      console.error('No token found in localStorage');
+      return throwError(() => new Error('No token found'));
+    }
+  
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    console.log('Fetching admin profile with token:', token);
+  
+    return this.http.get<{ id: number; name: string; email: string }>(
+      `${this.apiUrl}/profile`, { headers }
+    ).pipe(
+      map(response => {
+        console.log('Fetched admin profile:', response.name);
+        return response.name;
+      }),
+      catchError(error => {
+        console.error('Failed to fetch admin name:', error);
+        return throwError(() => new Error(error.message || 'Failed to fetch admin name'));
+      })
+    );
   }
-
-  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-  console.log('Fetching admin name with token:', token);
-
-  return this.http.get<{ success: boolean; admin: { name: string } }>(
-    `${this.apiUrl}/profile`, { headers }
-  ).pipe(
-    map(response => {
-      console.log('Fetched admin profile:', response.admin.name);
-      return response.admin.name;
-    }),
-    catchError(error => {
-      console.error('Failed to fetch admin name:', error);
-      return throwError(() => new Error(error.message || 'Failed to fetch admin name'));
-    })
-  );
-}
-
+  
 }

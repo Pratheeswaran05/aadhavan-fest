@@ -1,1 +1,39 @@
-<p>gallery works!</p>
+<div class="p-6 max-w-7xl mx-auto">
+    <h2 class="text-3xl font-bold text-center mb-8">Gallery</h2>
+  
+    <!-- Filters -->
+    <div class="flex flex-wrap justify-center gap-4 mb-8">
+      <button 
+        *ngFor="let cat of categories" 
+        (click)="filterGallery(cat)"
+        [ngClass]="{'bg-gray-300': selectedCategory === cat, 'bg-gray-200': selectedCategory !== cat}" 
+        class="px-4 py-2 rounded-full hover:bg-gray-300">
+        {{ cat | titlecase }}
+      </button>
+    </div>
+  
+    <!-- Masonry Gallery -->
+    <div class="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+      <img 
+        *ngFor="let image of filteredImages" 
+        (click)="openLightbox(image.src)" 
+        [attr.data-category]="image.category"
+        class="w-full rounded-lg hover:opacity-90 transition cursor-pointer" 
+        [src]="image.src" 
+        alt="Gallery Image" />
+    </div>
+  
+    <!-- Load More Button -->
+    <div class="flex justify-center mt-8">
+      <button (click)="loadMoreImages()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+        Load More
+      </button>
+    </div>
+  
+    <!-- Lightbox Popup -->
+    <div *ngIf="lightboxOpen" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+      <img class="max-h-[90vh] max-w-[90vw] rounded-lg" [src]="lightboxImage" alt="Full View" />
+      <button (click)="closeLightbox()" class="absolute top-6 right-6 text-white text-3xl">&times;</button>
+    </div>
+  </div>
+  
