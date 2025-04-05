@@ -1,24 +1,19 @@
 const express = require('express');
-const dotenv = require('dotenv');
-const cors = require('cors');
-const adminRoutes = require('./routes/adminRoutes');
-const pool = require('./config/db');
-
-dotenv.config();
 const app = express();
+const sequelize = require('./config/sequelize');
+const cors = require('cors');
 
-app.use(express.json()); // Parses JSON requests
-app.use(cors()); // Enables CORS
+const adminRoutes = require('./routes/adminRoutes');
+const videoRoutes = require('./routes/videoRoutes');
+
+app.use(cors());
+app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 
 app.use('/api/admin', adminRoutes);
+app.use('/api/videos', videoRoutes);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, async () => {
-    try {
-        await pool.connect();
-        console.log(`Server running on port ${PORT}`);
-        console.log("Connected to PostgreSQL");
-    } catch (err) {
-        console.error("Database connection error", err);
-    }
+// Sync sequelize and start server
+sequelize.sync().then(() => {
+    app.listen(5000, () => console.log('Server running on http://localhost:5000'));
 });

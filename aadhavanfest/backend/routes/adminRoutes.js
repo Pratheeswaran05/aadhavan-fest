@@ -1,13 +1,11 @@
 const express = require('express');
-const { loginAdmin, registerAdmin, getAdminProfile } = require('../controllers/adminController');
-const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
+const adminController = require('../controllers/adminController');
+const adminMiddleware = require('../middleware/authMiddleware');
 
 
-router.post('/login', loginAdmin); // Use POST for login
-router.post('/register', registerAdmin);
-router.get('/me', authMiddleware, getAdminProfile);
-
+router.post('/register', adminController.registerAdmin);
+router.post('/login', adminController.loginAdmin);
+router.get('/profile', adminMiddleware, adminController.getProfile);
 
 module.exports = router;
