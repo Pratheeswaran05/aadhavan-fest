@@ -121,32 +121,32 @@
   <form class="space-y-4"  enctype="multipart/form-data" >
     <div>
       <label class="block text-sm font-medium text-gray-700">Video Titles </label>
-      <input  name="titles" type="text"
+      <input  name="titles" [(ngModel)]="title"  type="text"
              placeholder="e.g., Classical Dance, Street Performance"
              class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
     </div>
 
     <div>
       <label class="block text-sm font-medium text-gray-700">Select Video Files</label>
-      <input type="file"  multiple
+      <input type="file"  multiple (change)="onVideoChange($event)" accept="video/*"
              class="w-full mt-1 p-2 border border-gray-300 rounded-md bg-white">
     </div>
 
     <div>
       <label class="block text-sm font-medium text-gray-700">Select Thumbnails (images)</label>
-      <input type="file"  multiple
+      <input type="file"  multiple (change)="onThumbnailChange($event)" accept="image/*"
              class="w-full mt-1 p-2 border border-gray-300 rounded-md bg-white">
     </div>
 
     <div>
       <label class="block text-sm font-medium text-gray-700">Description</label>
-      <textarea placeholder="Enter description"
+      <textarea [(ngModel)]="description" placeholder="Enter description"
                 class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
     </div>
 
     <div>
       <label class="block text-sm font-medium text-gray-700">Select Category</label>
-      <select class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
+      <select [(ngModel)]="category" class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
         <option>Music</option>
         <option>Dance</option>
         <option>Drama</option>
