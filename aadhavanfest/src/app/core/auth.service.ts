@@ -47,26 +47,6 @@ export class AuthService {
     return localStorage.getItem('adminToken');
   }
 
-//   getAdminName(): Observable<string> {
-//     const token = this.getToken();
-//     if (!token) {
-//       return throwError(() => new Error('No token found'));
-//     }
-
-//     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-//     return this.http.get<{ success: boolean; admin: { email: string } }>(
-//       `${this.apiUrl}/me`, { headers }
-//     ).pipe(
-//       map((response) => response.admin.email), // ✅ Fix map import issue
-//       catchError(error => {
-//         console.error('Failed to fetch admin name:', error);
-//         return throwError(() => new Error(error.message || 'Failed to fetch admin name'));
-//       })
-//     );
-//   }
-// }
-
 getAdminName(): Observable<string> {
   const token = this.getToken();
   if (!token) {
@@ -78,7 +58,7 @@ getAdminName(): Observable<string> {
   console.log('Fetching admin name with token:', token);
 
   return this.http.get<{ success: boolean; admin: { name: string } }>(
-    `${this.apiUrl}/me`, { headers }
+    `${this.apiUrl}/profile`, { headers }
   ).pipe(
     map(response => {
       console.log('Fetched admin profile:', response.admin.name);
@@ -90,4 +70,5 @@ getAdminName(): Observable<string> {
     })
   );
 }
+
 }

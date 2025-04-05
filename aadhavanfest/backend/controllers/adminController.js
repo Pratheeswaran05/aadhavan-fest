@@ -1,124 +1,61 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const pool = require('../config/db');
+const AdminUser = require('../models/AdminUser');
 
-// Register Admin
-const registerAdmin = async (req, res) => {
+const SECRET_KEY = 'your_secret_key'; // Move to .env in real apps
+
+exports.registerAdmin = async (req, res) => {
     try {
-        const { name, email, role, roleId, password } = req.body;
-
-        if (!name || !email || !role || !roleId || !password) {
-            return res.status(400).json({ success: false, message: "All fields are required" });
-        }
-
-        const client = await pool.connect();
-
-        // Check if admin already exists
-        const existingAdmin = await client.query({
-            text: 'SELECT id FROM admin_users WHERE email = $1',
-            values: [email]
-        });
-
-        if (existingAdmin.rows.length > 0) {
-            client.release();
-            return res.status(400).json({ success: false, message: 'Admin already exists' });
-        }
-
-        // Hash password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Insert new admin
-        const newAdmin = await client.query({
-            text: 'INSERT INTO admin_users (name, email, role, role_id, password_hash) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, role, role_id',
-            values: [name, email, role, roleId, hashedPassword]
-        });
-
-        client.release();
-        res.status(201).json({ success: true, message: "Admin registered successfully", admin: newAdmin.rows[0] });
-
-    } catch (error) {
-        console.error("Signup error:", error);
-        res.status(500).json({ success: false, message: "Server error", error: error.message });
-    }
-};
-
-
-
-
-// Login Admin
-const loginAdmin = async (req, res) => {
-    try {
-        console.log("Request Body:", req.body); // Check what is received
-
+        console.log("Received request for admin profile with user ID:", req.user.id);
+        
         const { email, password } = req.body;
 
-        if (!email || !password) {
-            return res.status(400).json({ success: false, message: "Email and password are required" });
+        const existingAdmin = await AdminUser.findOne({ where: { email } });
+        if (existingAdmin) {
+            return res.status(400).json({ message: 'Admin already exists' });
         }
 
-        const trimmedEmail = email.trim(); // Prevents extra spaces
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const admin = await AdminUser.create({ email, password_hash: hashedPassword });
 
-        const client = await pool.connect();
-        const result = await client.query({
-            text: 'SELECT id, email, password_hash FROM admin_users WHERE email = $1',
-            values: [trimmedEmail]
-        });
-
-        client.release();
-
-        if (result.rows.length === 0) {
-            return res.status(400).json({ success: false, message: 'Email not found' });
-        }
-
-        const admin = result.rows[0];
-
-        // Compare passwords
-        const isMatch = await bcrypt.compare(password, admin.password_hash);
-        if (!isMatch) {
-            return res.status(400).json({ success: false, message: 'Incorrect password' });
-        }
-
-        // Generate JWT token
-        const token = jwt.sign(
-            { id: admin.id, email: admin.email },
-            process.env.JWT_SECRET,
-            { expiresIn: '1h' }
-        );
-
-        res.json({ success: true, message: 'Login successful', token, admin: { id: admin.id, email: admin.email } });
-    } catch (error) {
-        console.error("Login error:", error);
-        res.status(500).json({ success: false, message: "Server error", error: error.message });
+        res.status(201).json({ id: admin.id, email: admin.email });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
     }
 };
 
-
-const getAdminProfile = async (req, res) => {
+exports.loginAdmin = async (req, res) => {
     try {
-        console.log("Received request for admin profile with user ID:", req.user.id); // Log user ID
+        const { email, password } = req.body;
 
-        const client = await pool.connect();
-        const adminId = req.user.id;
+        const admin = await AdminUser.findOne({ where: { email } });
+        if (!admin) return res.status(400).json({ message: 'Invalid credentials' });
 
-        const result = await client.query({
-            text: 'SELECT id, name, email FROM admin_users WHERE id = $1',
-            values: [adminId]
-        });
+        const isMatch = await bcrypt.compare(password, admin.password_hash);
+        if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
-        client.release();
+        const token = jwt.sign({ id: admin.id }, SECRET_KEY, { expiresIn: '1h' });
 
-        if (result.rows.length === 0) {
-            console.error("Admin not found for ID:", adminId);
-            return res.status(404).json({ success: false, message: 'Admin not found' });
-        }
-
-        console.log("Admin profile fetched successfully:", result.rows[0]);
-        res.json({ success: true, admin: result.rows[0] });
-    } catch (error) {
-        console.error("Error fetching admin profile:", error); // Log full error
-        res.status(500).json({ success: false, message: "Server error", error: error.message });
+        res.json({ token });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
     }
 };
 
+exports.getProfile = async (req, res) => {
+    try {
+        const admin = req.admin; // This is full AdminUser model instance!
 
-module.exports = { registerAdmin, loginAdmin, getAdminProfile};
+        res.json({
+            id: admin.id,
+            name: admin.name,
+            email: admin.email
+            // any other fields you want
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+};

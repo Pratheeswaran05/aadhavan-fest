@@ -1,37 +1,20 @@
-// const express = require('express');
-// const { uploadVideo } = require('../controllers/videoController');
-// const upload = require('../middleware/uploadMiddleware');
-// const verifyAdmin = require('../middleware/authMiddleware');
-
-// const router = express.Router();
-
-// router.post(
-//   '/upload',
-//   verifyAdmin,
-//   upload.fields([
-//     { name: 'videos', maxCount: 5 },
-//     { name: 'thumbnails', maxCount: 5 },
-//   ]),
-//   uploadVideo
-// );
-
-// module.exports = router;
-
-
 const express = require('express');
-const { uploadVideo } = require('../controllers/videoController');
-const upload = require('../middleware/uploadMiddleware');
-const { verifyAdmin } = require('../middleware/authMiddleware');
-
 const router = express.Router();
+const multer = require('multer');
+const path = require('path');
+const videoController = require('../controllers/videoController');
+const authMiddleware = require('../middleware/authMiddleware');
 
-router.post('/upload',
-    verifyAdmin, // ✅ This must be a function
-    upload.fields([
-        { name: 'videos', maxCount: 5 },
-        { name: 'thumbnails', maxCount: 5 }
-    ]),
-    uploadVideo
-);
+const storage = multer.diskStorage({
+    destination: './uploads/',
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}${path.extname(file.originalname)}`);
+    }
+});
 
-module.exports = router; // ✅ Only export the router
+const upload = multer({ storage });
+
+router.post('/upload', authMiddleware, upload.single('video'), videoController.uploadVideo);
+router.get('/', videoController.getAllVideos);
+
+module.exports = router;

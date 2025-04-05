@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from '../../../core/api.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -23,7 +24,7 @@ export class SignupComponent {
     student: { label: 'Student ID', placeholder: 'Enter Student ID' }
   };
 
-  constructor(private apiService: ApiService, private toastr: ToastrService) {}
+  constructor(private apiService: ApiService, private toastr: ToastrService, private router: Router) {}
 
   get roleLabel(): string {
     return this.roleData[this.selectedRole]?.label || 'ID';
@@ -58,6 +59,8 @@ export class SignupComponent {
       response => {
         console.log("Signup Success:", response);
         this.toastr.success('Signup Successful');
+        this.router.navigate(['/admin/login']);
+
       },
       error => {
         console.error("Signup Error:", error);

@@ -50,7 +50,7 @@ export class DashboardComponent implements OnInit{
 
   logout(): void {
     this.authService.logout();
-    // this.router.navigate(['/admin/login']); // Ensure redirection after logout
+    this.router.navigate(['/admin/login']); // Ensure redirection after logout
   }
 
 // Handle video selection
@@ -63,7 +63,6 @@ onThumbnailChange(event: any) {
   this.selectedThumbnails = Array.from(event.target.files);
 }
 
-// Upload videos & thumbnails
 // Upload videos & thumbnails
 uploadVideos() {
   if (this.selectedVideos.length === 0 || this.selectedThumbnails.length === 0 || !this.title || !this.category) {
