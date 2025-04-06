@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../core/auth.service';
 import { Router } from '@angular/router';
-import { ApiService } from '../../../core/api.service';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,15 +8,31 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
-export class DashboardComponent  {
+export class DashboardComponent implements OnInit{
 
-  // isSidebarOpen = true;
-  // adminName: string = '';
-  // selectedMenu: string = 'overview'; // default tab
-  isSidebarOpen = true;
-  selectedMenu = 'overview'; // default selected
-  adminName = 'Admin'; // load your admin name here
 
+
+
+
+  isSidebarOpen: boolean = true;
+  selectedMenu: string = 'overview';
+  adminName: string = '';
+
+  constructor(private router: Router, private authService: AuthService) {}
+
+  ngOnInit(): void {
+    this.authService.getAdmin().subscribe({
+      // next: (data: string) => {
+      //   this.adminName = data;
+      next: (name) => {
+        this.adminName = name;  // Store admin name
+        console.log('Admin Name:', this.adminName);
+      },
+      error: (error: Error) => {
+        console.error('Error fetching admin name:', error.message);
+      }
+    });
+  }
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
@@ -28,14 +42,8 @@ export class DashboardComponent  {
   }
 
   logout() {
-    // Remove token from localStorage or sessionStorage
-  localStorage.removeItem('token'); 
-  sessionStorage.removeItem('token'); // (if you stored it in sessionStorage)
-
-  // (Optional) If you have any user info stored
-  localStorage.removeItem('user');
-  
-  // Redirect to login page
-  window.location.href = '/admin/login'; 
+    localStorage.removeItem('token');
+    localStorage.removeItem('adminName'); // remove stored admin name too
+    this.router.navigate(['/admin/login']);
   }
 }

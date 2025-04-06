@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-manage-videos',
@@ -8,30 +9,31 @@ import { Component } from '@angular/core';
 })
 export class ManageVideosComponent {
 
-
   videoTitle: string = '';
   videoDescription: string = '';
-  selectedVideoFile: File | null = null;
-  selectedVideoName: string = '';
-  selectedThumbnailFile: File | null = null;
-  selectedThumbnailName: string = '';
-  selectedCategories: string[] = [];
   categories: string[] = ['Highlights', 'Achievements', 'Events', 'Gallery'];
-
-
-
-  // Track selected subcategories
-  
+  selectedCategories: string[] = [];
   selectedSubcategories: { [key: string]: string } = {};
-
-  // Dummy subcategories for each category
+  
   subcategoriesMap: { [key: string]: string[] } = {
     Highlights: ['Inside College', 'Outside College'],
     Achievements: ['District', 'State', 'National'],
-    Events: ['Upcomming Events', 'Past Events'],
+    Events: ['Upcoming Events', 'Past Events'],
     Gallery: ['Photos', 'Videos'],
-    College: ['About', 'Faclities', 'Clubs']
+    College: ['About', 'Facilities', 'Clubs']
   };
+
+  selectedFiles: {
+    video: File;
+    thumbnail: File | null;
+    videoPreviewUrl: SafeUrl;
+    thumbnailPreviewUrl: SafeUrl | null;
+  }[] = [];
+
+  constructor(
+    private sanitizer: DomSanitizer,
+    // private videoService: VideoService
+  ) {}
 
   onCategoryChange(event: any) {
     const category = event.target.value;
@@ -41,7 +43,7 @@ export class ManageVideosComponent {
       this.selectedCategories.push(category);
     } else {
       this.selectedCategories = this.selectedCategories.filter(c => c !== category);
-      delete this.selectedSubcategories[category]; // remove subcategory selection if category unchecked
+      delete this.selectedSubcategories[category];
     }
   }
 
@@ -49,92 +51,79 @@ export class ManageVideosComponent {
     return this.subcategoriesMap[category] || [];
   }
 
-  uploadedVideos: any[] = [];
+  // --- VIDEO FILE SELECT ---
+  onVideoFilesChange(event: any) {
+    const files: FileList = event.target.files;
+    if (files && files.length > 0) {
+      Array.from(files).forEach(file => {
+        if (file.type.startsWith('video/')) {
+          const videoUrl = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file));
+          this.selectedFiles.push({
+            video: file,
+            thumbnail: null,
+            videoPreviewUrl: videoUrl,
+            thumbnailPreviewUrl: null
+          });
+        }
+      });
+    }
+  }
 
-  // @ViewChild('videoInput') videoInput!: ElementRef<HTMLInputElement>;
-  // @ViewChild('thumbnailInput') thumbnailInput!: ElementRef<HTMLInputElement>;
+  // --- THUMBNAIL SELECT ---
+  onThumbnailChange(event: any, index: number) {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const thumbnailUrl = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file));
+      this.selectedFiles[index].thumbnail = file;
+      this.selectedFiles[index].thumbnailPreviewUrl = thumbnailUrl;
+    }
+  }
 
-  constructor() {}
+  // --- DRAG & DROP VIDEO ---
+  onVideoDrop(event: DragEvent) {
+    event.preventDefault();
+    const file = event.dataTransfer?.files[0];
+    if (file && file.type.startsWith('video/')) {
+      const videoUrl = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file));
+      this.selectedFiles.push({
+        video: file,
+        thumbnail: null,
+        videoPreviewUrl: videoUrl,
+        thumbnailPreviewUrl: null
+      });
+    }
+  }
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
   }
 
-  onVideoDrop(event: DragEvent) {
-    event.preventDefault();
-    const file = event.dataTransfer?.files[0];
-    if (file && file.type.startsWith('video/')) {
-      this.selectedVideoFile = file;
-      this.selectedVideoName = file.name;
-    }
+  // --- REMOVE A FILE ---
+  removeFile(index: number) {
+    this.selectedFiles.splice(index, 1);
   }
 
-  onThumbnailDrop(event: DragEvent) {
-    event.preventDefault();
-    const file = event.dataTransfer?.files[0];
-    if (file && file.type.startsWith('image/')) {
-      this.selectedThumbnailFile = file;
-      this.selectedThumbnailName = file.name;
-    }
-  }
-
-  onVideoFileChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-      if (file.type.startsWith('video/')) {
-        this.selectedVideoFile = file;
-        this.selectedVideoName = file.name;
-      }
-    }
-  }
-
-  onThumbnailChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-      if (file.type.startsWith('image/')) {
-        this.selectedThumbnailFile = file;
-        this.selectedThumbnailName = file.name;
-      }
-    }
-  }
-
-  // onCategoryChange(event: any) {
-  //   const category = event.target.value;
-  //   if (event.target.checked) {
-  //     this.selectedCategories.push(category);
-  //   } else {
-  //     this.selectedCategories = this.selectedCategories.filter(c => c !== category);
-  //   }
-  // }
-
+  // --- SUBMIT UPLOAD ---
   // onSubmit() {
-    // if (!this.videoTitle || !this.selectedVideoFile || !this.selectedThumbnailFile) {
-    //   alert('Please fill in all required fields!');
-    //   return;
-    // }
+  //   this.selectedFiles.forEach(filePair => {
+  //     const formData = new FormData();
+  //     formData.append('video', filePair.video);
+  //     if (filePair.thumbnail) {
+  //       formData.append('thumbnail', filePair.thumbnail);
+  //     }
+  //     formData.append('title', this.videoTitle);
+  //     formData.append('description', this.videoDescription);
+  //     formData.append('categories', JSON.stringify(this.selectedCategories));
+  //     formData.append('subcategories', JSON.stringify(this.selectedSubcategories));
 
-    // const newVideo = {
-    //   title: this.videoTitle,
-    //   videoUrl: URL.createObjectURL(this.selectedVideoFile),  // Only preview in frontend
-    //   thumbnailUrl: URL.createObjectURL(this.selectedThumbnailFile),
-    //   categories: [...this.selectedCategories],
-    //   description: this.videoDescription
-    // };
-
-    // this.uploadedVideos.push(newVideo);
-
-    // Reset form
-  //   this.videoTitle = '';
-  //   this.videoDescription = '';
-  //   this.selectedVideoFile = null;
-  //   this.selectedVideoName = '';
-  //   this.selectedThumbnailFile = null;
-  //   this.selectedThumbnailName = '';
-  //   this.selectedCategories = [];
-  //   if (this.videoInput) this.videoInput.nativeElement.value = '';
-  //   if (this.thumbnailInput) this.thumbnailInput.nativeElement.value = '';
+  //     this.videoService.uploadVideo(formData).subscribe({
+  //       next: (response) => {
+  //         console.log('Uploaded:', response);
+  //       },
+  //       error: (error) => {
+  //         console.error('Upload failed:', error);
+  //       }
+  //     });
+  //   });
   // }
-
 }
