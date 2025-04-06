@@ -10,21 +10,14 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
-export class DashboardComponent implements OnInit{
+export class DashboardComponent  {
 
+  // isSidebarOpen = true;
+  // adminName: string = '';
+  // selectedMenu: string = 'overview'; // default tab
   isSidebarOpen = true;
-  adminName: string = '';
-  selectedMenu: string = 'overview'; // default tab
-
-  selectedVideos: File[] = [];
-  selectedThumbnails: File[] = [];
-  title: string = '';
-  description: string = '';
-  category: string = '';
-  isUploading = false;
-
-
-  constructor(private authService: AuthService, private router: Router, private apiService: ApiService, private http: HttpClient) {}
+  selectedMenu = 'overview'; // default selected
+  adminName = 'Admin'; // load your admin name here
 
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
@@ -33,70 +26,16 @@ export class DashboardComponent implements OnInit{
   selectMenu(menu: string) {
     this.selectedMenu = menu;
   }
+
+  logout() {
+    // Remove token from localStorage or sessionStorage
+  localStorage.removeItem('token'); 
+  sessionStorage.removeItem('token'); // (if you stored it in sessionStorage)
+
+  // (Optional) If you have any user info stored
+  localStorage.removeItem('user');
   
-
-  ngOnInit(): void {
-    this.authService.getAdmin().subscribe({
-      // next: (data: string) => {
-      //   this.adminName = data;
-      next: (name) => {
-        this.adminName = name;  // Store admin name
-        console.log('Admin Name:', this.adminName);
-      },
-      error: (error: Error) => {
-        console.error('Error fetching admin name:', error.message);
-      }
-    });
+  // Redirect to login page
+  window.location.href = '/admin/login'; 
   }
-
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/admin/login']); // Ensure redirection after logout
-  }
-
-// Handle video selection
-onVideoChange(event: any) {
-  this.selectedVideos = Array.from(event.target.files);
-}
-
-// Handle thumbnail selection
-onThumbnailChange(event: any) {
-  this.selectedThumbnails = Array.from(event.target.files);
-}
-
-// Upload videos & thumbnails
-uploadVideos() {
-  if (this.selectedVideos.length === 0 || this.selectedThumbnails.length === 0 || !this.title || !this.category) {
-    alert('Please fill all required fields and select both videos and thumbnails.');
-    return;
-  }
-
-  this.isUploading = true;
-  const formData = new FormData();
-
-  // Append form data
-  formData.append('title', this.title);
-  formData.append('description', this.description);
-  formData.append('category', this.category);
-  this.selectedVideos.forEach((file) => formData.append('videos', file));
-  this.selectedThumbnails.forEach((file) => formData.append('thumbnails', file));
-
-  // API Call
-  this.apiService.uploadVideos(formData).subscribe({
-    next: (res) => {
-      alert('Videos uploaded successfully!');
-      this.isUploading = false;
-      this.selectedVideos = [];
-      this.selectedThumbnails = [];
-      this.title = '';
-      this.description = '';
-      this.category = '';
-    },
-    error: (err) => {
-      console.error('Upload failed:', err);
-      alert('Upload failed.');
-      this.isUploading = false;
-    }
-  });
- }
 }

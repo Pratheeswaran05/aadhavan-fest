@@ -1,4 +1,5 @@
 <div class="relative h-screen flex">
+  
   <!-- Sidebar -->
   <div [ngClass]="{ 'w-64': isSidebarOpen, 'w-16': !isSidebarOpen }"
        class="bg-gray-100 h-full shadow-lg flex flex-col transition-all duration-300">
@@ -20,20 +21,27 @@
 
     <!-- Sidebar Menu -->
     <nav class="space-y-2 p-2">
-      <a (click)="selectMenu('overview')"  [ngClass]="{'bg-black text-white': selectedMenu === 'overview','hover:bg-gray-500 hover:text-white': selectedMenu !== 'overview' }"
-       class="flex items-center p-2 rounded-md cursor-pointer">
+      <a (click)="selectMenu('overview')" 
+         [ngClass]="{ 'bg-black text-white': selectedMenu === 'overview', 'hover:bg-gray-500 hover:text-white': selectedMenu !== 'overview' }"
+         class="flex items-center p-2 rounded-md cursor-pointer">
         <span *ngIf="isSidebarOpen" class="ml-2">Overview</span>
       </a>
-      <a (click)="selectMenu('videos')" [ngClass]="{'bg-black text-white': selectedMenu === 'videos','hover:bg-gray-500 hover:text-white': selectedMenu !== 'videos' }"
-      class="flex items-center p-2 rounded-md  cursor-pointer">
+
+      <a (click)="selectMenu('videos')" 
+         [ngClass]="{ 'bg-black text-white': selectedMenu === 'videos', 'hover:bg-gray-500 hover:text-white': selectedMenu !== 'videos' }"
+         class="flex items-center p-2 rounded-md cursor-pointer">
         <span *ngIf="isSidebarOpen" class="ml-2">Manage Videos</span>
       </a>
-      <a (click)="selectMenu('categories')" [ngClass]="{'bg-black text-white': selectedMenu === 'categories','hover:bg-gray-500 hover:text-white': selectedMenu !== 'categories' }" 
-      class="flex items-center p-2 rounded-md  cursor-pointer">
+
+      <a (click)="selectMenu('categories')" 
+         [ngClass]="{ 'bg-black text-white': selectedMenu === 'categories', 'hover:bg-gray-500 hover:text-white': selectedMenu !== 'categories' }"
+         class="flex items-center p-2 rounded-md cursor-pointer">
         <span *ngIf="isSidebarOpen" class="ml-2">Manage Categories</span>
       </a>
-      <a (click)="selectMenu('gallery')" [ngClass]="{'bg-black text-white': selectedMenu === 'gallery','hover:bg-gray-500 hover:text-white': selectedMenu !== 'gallery' }"
-      class="flex items-center p-2 rounded-md  cursor-pointer">
+
+      <a (click)="selectMenu('gallery')" 
+         [ngClass]="{ 'bg-black text-white': selectedMenu === 'gallery', 'hover:bg-gray-500 hover:text-white': selectedMenu !== 'gallery' }"
+         class="flex items-center p-2 rounded-md cursor-pointer">
         <span *ngIf="isSidebarOpen" class="ml-2">Gallery Management</span>
       </a>
     </nav>
@@ -45,276 +53,21 @@
     </a>
   </div>
 
-  <!-- Main Content Area -->
-      <!-- overview menu content -->
-  <div class="flex-1 bg-white p-6 overflow-y-auto">
-    <div *ngIf="selectedMenu === 'overview'">
-      <h1 class="text-xl font-bold mb-4">Overview</h1>
-      <p>Welcome to the overview section.</p>
+  <!-- Main Content -->
+  <div class="flex-1 p-6 overflow-auto" [ngSwitch]="selectedMenu">
 
-   
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Total Videos Card -->
-        <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition duration-300">
-          <h3 class="text-sm text-gray-500">Total Videos</h3>
-          <p class="text-3xl font-bold text-gray-800 mt-2">120</p>
-        </div>
-      
-        <!-- Total Gallery Images Card -->
-        <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition duration-300">
-          <h3 class="text-sm text-gray-500">Gallery Images</h3>
-          <p class="text-3xl font-bold text-gray-800 mt-2">350</p>
-        </div>
-      
-        <!-- Total Categories Card -->
-        <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition duration-300">
-          <h3 class="text-sm text-gray-500">Categories</h3>
-          <p class="text-3xl font-bold text-gray-800 mt-2">12</p>
-        </div>
-      
-        <!-- Last Login Info -->
-        <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition duration-300">
-          <h3 class="text-sm text-gray-500">Last Login</h3>
-          <p class="text-base text-gray-700 mt-2">April 5, 2025 - 10:32 AM</p>
-        </div>
-      </div>
-      
-      <!-- Recent Activity Section -->
-      <div class="mt-10">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">Recent Uploads</h2>
-        <div class="bg-white rounded-xl shadow p-4 space-y-3">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="font-medium text-gray-700">Cultural Dance 2025</p>
-              <p class="text-sm text-gray-500">Video • Uploaded 2 hours ago</p>
-            </div>
-            <span class="text-sm text-blue-600 font-medium">View</span>
-          </div>
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="font-medium text-gray-700">Annual Day Highlights</p>
-              <p class="text-sm text-gray-500">Gallery • Uploaded 1 day ago</p>
-            </div>
-            <span class="text-sm text-blue-600 font-medium">View</span>
-          </div>
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="font-medium text-gray-700">Drama Club Teaser</p>
-              <p class="text-sm text-gray-500">Video • Uploaded 3 days ago</p>
-            </div>
-            <span class="text-sm text-blue-600 font-medium">View</span>
-          </div>
-        </div>
-      </div>
-      
+    <app-overview *ngSwitchCase="'overview'"></app-overview>
+
+    <app-manage-videos *ngSwitchCase="'videos'"></app-manage-videos>
+
+    <app-manage-categories *ngSwitchCase="'categories'"></app-manage-categories>
+
+    <app-gallery-management *ngSwitchCase="'gallery'"></app-gallery-management>
+
+    <div *ngSwitchDefault>
+      <p class="text-gray-500">Please select a menu from the sidebar.</p>
     </div>
 
-    <!-- manage videos menu content -->
-    <div *ngIf="selectedMenu === 'videos'">
-      <h1 class="text-xl font-bold mb-4">Manage Videos</h1>
-      <p>Video management content here.</p>
-
-      <!-- Upload Form -->
-<div class="bg-white rounded-xl shadow-md p-6 mb-6">
-  <h2 class="text-xl font-semibold mb-4 text-gray-800">Upload New Video</h2>
-  
-  <form class="space-y-4"  enctype="multipart/form-data" >
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Video Titles </label>
-      <input  name="titles" [(ngModel)]="title"  type="text"
-             placeholder="e.g., Classical Dance, Street Performance"
-             class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
-    </div>
-
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Select Video Files</label>
-      <input type="file"  multiple (change)="onVideoChange($event)" accept="video/*"
-             class="w-full mt-1 p-2 border border-gray-300 rounded-md bg-white">
-    </div>
-
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Select Thumbnails (images)</label>
-      <input type="file"  multiple (change)="onThumbnailChange($event)" accept="image/*"
-             class="w-full mt-1 p-2 border border-gray-300 rounded-md bg-white">
-    </div>
-
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Description</label>
-      <textarea [(ngModel)]="description" placeholder="Enter description"
-                class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
-    </div>
-
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Select Category</label>
-      <select [(ngModel)]="category" class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
-        <option>Music</option>
-        <option>Dance</option>
-        <option>Drama</option>
-        <option>Festivals</option>
-      </select>
-    </div>
-
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Upload Video</label>
-      <input type="file" class="mt-1 p-2 border border-gray-300 rounded-md w-full bg-white">
-    </div>
-
-    <button type="submit"
-            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
-      Upload Video
-    </button>
-  </form>
-</div>
-
-<!-- Video List -->
-<div class="bg-white rounded-xl shadow-md p-6">
-  <h2 class="text-xl font-semibold mb-4 text-gray-800">Uploaded Videos</h2>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    <!-- Video Card -->
-    <div class="border rounded-xl shadow-sm p-4 hover:shadow-md transition">
-      <video controls class="rounded-md w-full h-40 object-cover mb-2">
-        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-      <h3 class="text-lg font-semibold text-gray-800">Cultural Dance 2025</h3>
-      <p class="text-sm text-gray-500 mb-2">Category: Dance</p>
-      <div class="flex space-x-2">
-        <button class="text-white bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-sm">Edit</button>
-        <button class="text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm">Delete</button>
-      </div>
-    </div>
-
-    <!-- More video cards can be added similarly -->
   </div>
-</div>
 
-    </div>
-
-    <!-- manage  category -->
-    <div *ngIf="selectedMenu === 'categories'">
-      <h1 class="text-xl font-bold mb-4">Manage Categories</h1>
-      <p>Category management content here.</p>
-
-      <!-- Add/Edit Category Form -->
-<div class="bg-white rounded-xl shadow-md p-6 mb-6">
-  <h2 class="text-xl font-semibold text-gray-800 mb-4">Add New Category</h2>
-
-  <form class="space-y-4">
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Category Name</label>
-      <input type="text" placeholder="e.g., Dance, Music"
-             class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
-    </div>
-
-    <button type="submit"
-            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
-      Save Category
-    </button>
-  </form>
-</div>
-
-<!-- Category List -->
-<div class="bg-white rounded-xl shadow-md p-6">
-  <h2 class="text-xl font-semibold text-gray-800 mb-4">Existing Categories</h2>
-
-  <div class="overflow-x-auto">
-    <table class="min-w-full table-auto">
-      <thead>
-        <tr class="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-          <th class="py-3 px-6 text-left">#</th>
-          <th class="py-3 px-6 text-left">Category Name</th>
-          <th class="py-3 px-6 text-center">Actions</th>
-        </tr>
-      </thead>
-      <tbody class="text-gray-700 text-sm">
-        <tr class="border-b hover:bg-gray-50">
-          <td class="py-3 px-6">1</td>
-          <td class="py-3 px-6">Dance</td>
-          <td class="py-3 px-6 text-center">
-            <button class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 mr-2">Edit</button>
-            <button class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700">Delete</button>
-          </td>
-        </tr>
-        <tr class="border-b hover:bg-gray-50">
-          <td class="py-3 px-6">2</td>
-          <td class="py-3 px-6">Drama</td>
-          <td class="py-3 px-6 text-center">
-            <button class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 mr-2">Edit</button>
-            <button class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700">Delete</button>
-          </td>
-        </tr>
-        <!-- Add more rows as needed -->
-      </tbody>
-    </table>
-  </div>
-</div>
-
-    </div>
-
-
-    <!-- manage gallery menu content -->
-    <div *ngIf="selectedMenu === 'gallery'">
-      <h1 class="text-xl font-bold mb-4">Gallery Management</h1>
-      <p>Gallery management content here.</p>
-
-      <!-- Upload Image Form -->
-<div class="bg-white rounded-xl shadow-md p-6 mb-6">
-  <h2 class="text-xl font-semibold text-gray-800 mb-4">Upload Image</h2>
-
-  <form class="space-y-4">
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Image Title</label>
-      <input type="text" placeholder="e.g., Cultural Fest 2025"
-             class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
-    </div>
-
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Select Category</label>
-      <select class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
-        <option>Dance</option>
-        <option>Music</option>
-        <option>Drama</option>
-        <option>Festivals</option>
-      </select>
-    </div>
-
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Upload Image</label>
-      <input type="file"
-             class="w-full mt-1 p-2 border border-gray-300 rounded-md bg-white focus:outline-none">
-    </div>
-
-    <button type="submit"
-            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
-      Upload
-    </button>
-  </form>
-</div>
-
-<!-- Image Gallery Grid -->
-<div class="bg-white rounded-xl shadow-md p-6">
-  <h2 class="text-xl font-semibold text-gray-800 mb-4">Uploaded Images</h2>
-
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-    <!-- Gallery Item -->
-    <div class="relative group border rounded-lg overflow-hidden shadow hover:shadow-md transition">
-      <img src="https://source.unsplash.com/400x300/?dance,culture" alt="Gallery Image"
-           class="object-cover w-full h-48">
-      <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 flex items-center justify-center space-x-2 transition">
-        <button class="bg-white text-sm px-3 py-1 rounded hover:bg-gray-100">Edit</button>
-        <button class="bg-red-600 text-white text-sm px-3 py-1 rounded hover:bg-red-700">Delete</button>
-      </div>
-      <div class="p-2">
-        <h3 class="text-sm font-semibold text-gray-800">Cultural Dance</h3>
-        <p class="text-xs text-gray-500">Category: Dance</p>
-      </div>
-    </div>
-
-    <!-- More gallery items... -->
-  </div>
-</div>
-
-    </div>
-  </div>
 </div>

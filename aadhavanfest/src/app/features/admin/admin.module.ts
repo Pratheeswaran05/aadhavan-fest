@@ -7,13 +7,21 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { SignupComponent } from './signup/signup.component';
 import { FormsModule} from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
+import { OverviewComponent } from './overview/overview.component';
+import { GalleryManagementComponent } from './gallery-management/gallery-management.component';
+import { ManageVideosComponent } from './manage-videos/manage-videos.component';
+import { ManageCategoriesComponent } from './manage-categories/manage-categories.component';
 
 
 @NgModule({
   declarations: [
     LoginComponent,
     DashboardComponent,
-    SignupComponent
+    SignupComponent,
+    OverviewComponent,
+    GalleryManagementComponent,
+    ManageVideosComponent,
+    ManageCategoriesComponent
   ],
   imports: [
     CommonModule,
