@@ -19,7 +19,6 @@ const uploadVideo = async (req, res) => {
     }
 
     const newVideo = await Video.create({
-      // admin_id,
       admin_id: adminId,
       title,
       description,

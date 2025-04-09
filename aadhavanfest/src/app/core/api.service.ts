@@ -18,13 +18,13 @@ export class ApiService {
 
 
   // Upload multiple videos
-  uploadVideos(formData: FormData): Observable<any> {
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${localStorage.getItem('token')}`, // Ensure admin is authenticated
-    });
+  // uploadVideos(formData: FormData): Observable<any> {
+  //   const headers = new HttpHeaders({
+  //     Authorization: `Bearer ${localStorage.getItem('token')}`, // Ensure admin is authenticated
+  //   });
 
-    return this.http.post(`${this.apiUrl}/videos/upload`, formData, { headers });
-  }
+  //   return this.http.post(`${this.apiUrl}/videos/upload`, formData, { headers });
+  // }
   
 }
 

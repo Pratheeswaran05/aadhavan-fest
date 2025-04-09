@@ -1,54 +1,5 @@
-// // const { DataTypes } = require('sequelize');
-// // const sequelize = require('../config/sequelize');
-//     const { DataTypes } = require('sequelize');
-//     const sequelize = require('../config/sequelize'); // ✅ your db connection
-//     const AdminUser = require('./AdminUser');
-
-    
-//     const Video = sequelize.define('Video', {
-//       id: {
-//         type: DataTypes.INTEGER,
-//         primaryKey: true,
-//         autoIncrement: true
-//       },
-//       title: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//       },
-//       description: {
-//         type: DataTypes.TEXT,
-//         allowNull: true
-//       },
-//       videoPath: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//       },
-//       thumbnailPath: {
-//         type: DataTypes.STRING,
-//         allowNull: true
-//       },
-//       admin_id: {
-//         type: DataTypes.INTEGER,
-//         allowNull: false,
-//         references: {
-//           model: 'admin_users', // ❗ use actual *table name* in DB (lowercase, snake_case if needed)
-//           key: 'id'
-//         }
-//       }
-//     }, {
-//       tableName: 'videos', // ✅ Table name
-//       timestamps: true
-//     });
-    
-//     // Relation
-//     Video.belongsTo(AdminUser, { foreignKey: 'admin_id' });
-    
-//     module.exports = Video;
-
-// models/Video.js
-
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/sequelize'); // adjust the path
+const sequelize = require('../config/sequelize'); 
 
 const Video = sequelize.define('Video', {
   video_id: {

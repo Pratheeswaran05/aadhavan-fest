@@ -16,20 +16,6 @@ export class DashboardComponent implements OnInit{
 
   constructor(private router: Router, private authService: AuthService) {}
 
-  // ngOnInit(): void {
-  //   this.authService.getAdmin().subscribe({
-  //     // next: (data: string) => {
-  //     //   this.adminName = data;
-  //     next: (name) => {
-  //       this.adminName = name;  // Store admin name
-  //       console.log('Admin Name:', this.adminName);
-  //     },
-  //     error: (error: Error) => {
-  //       console.error('Error fetching admin name:', error.message);
-  //     }
-  //   });
-  // }
-
   ngOnInit(): void {
     this.authService.getAdmin().subscribe({
       next: (admin) => {
@@ -39,7 +25,7 @@ export class DashboardComponent implements OnInit{
       error: (error: Error) => {
         console.error('Failed to fetch admin:', error.message);
         this.authService.clearSession();    // remove bad token
-        this.router.navigate(['/admin/login']); // move to login
+        this.router.navigate(['/admin/login']);
       
       }
     });
