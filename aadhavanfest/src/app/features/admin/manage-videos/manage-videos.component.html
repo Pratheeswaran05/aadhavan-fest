@@ -1,134 +1,163 @@
 <h1 class="text-2xl font-bold mb-6 text-gray-800">Manage Videos</h1>
-<div class="bg-white rounded-2xl shadow-md p-6 mb-8">
-  <!-- Upload New Video -->
-  <h2 class="text-xl font-semibold mb-4 text-gray-800">Upload New Video</h2>
-  <form enctype="multipart/form-data" class="space-y-6">
 
+<div class="bg-white rounded-2xl shadow-md p-6 mb-8">
+  <!-- Upload New Video Section -->
+  <h2 class="text-xl font-semibold mb-4 text-gray-800">Upload New Video</h2>
+
+  <form  (ngSubmit)="uploadVideo()" enctype="multipart/form-data" class="space-y-6">
     <!-- Video Title -->
     <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Event Name or Video Title</label>
-      <input type="text" [(ngModel)]="videoTitle" name="title" placeholder="e.g., Classical Dance 2025"
-          class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
+      <label class="block text-sm font-medium text-gray-700 mb-1">
+        Event Name or Video Title
+      </label>
+      <input
+        type="text"
+        [(ngModel)]="videoTitle"
+        name="title"
+        placeholder="e.g., Classical Dance 2025"
+        class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      />
     </div>
 
-    <div class="p-6 space-y-6">
-      <!-- Video Upload -->
-      <div>
-          <label class="block mb-2 font-bold">Select Videos</label>
-          <input type="file" accept="video/*" (change)="onVideoFilesChange($event)" multiple
-          class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
-      </div>
 
-
-<!-- Preview List -->
-<div *ngIf="selectedFiles.length > 0" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-  <div *ngFor="let file of selectedFiles; let i = index" class="relative border rounded-2xl p-4 shadow-md">
-   <video [src]="file.videoPreviewUrl" controls class="rounded-xl w-full h-48 object-cover"></video>
-
-<!-- Thumbnail Upload -->
-      <div class="mt-4">
-        <label class="block mb-2 text-sm font-medium">Select Thumbnail</label>
-        <input type="file" accept="image/*" (change)="onThumbnailChange($event, i)"
-          class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100" />
-      </div>
-
-      <!-- Thumbnail Preview -->
-      <div *ngIf="file.thumbnailPreviewUrl" class="mt-2">
-        <img [src]="file.thumbnailPreviewUrl" alt="Thumbnail" class="rounded-lg w-full h-32 object-cover" />
-      </div>
-
-      <!-- Remove Button -->
-      <button (click)="removeFile(i)" class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-1 rounded-full">
-        ✖
-      </button>
-    </div>
-  </div>
-
-      <!-- Description -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-        <textarea [(ngModel)]="videoDescription" name="description" rows="3"
-          placeholder="Enter a short description..."
-          class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
-      </div>
-
-      
-<div>
-<label class="block text-sm font-medium text-gray-700 mb-2">Add to</label>
-<div class="flex flex-wrap gap-4">
-  <div *ngFor="let category of categories">
-    <label class="inline-flex items-center">
+     <!-- Drag & Drop Area + File Upload -->
+     <div class="p-6 space-y-6 text-center border-2 border-dashed rounded-xl" (drop)="onVideoDrop($event)"
+     (dragover)="onDragOver($event)">
+      <p class="text-gray-500">Drag and drop videos here or click to select</p>
       <input 
-        type="checkbox" 
-        [value]="category" 
-        (change)="onCategoryChange($event)"
-        class="form-checkbox h-5 w-5 text-blue-600">
-      <span class="ml-2 text-gray-700">{{ category }}</span>
-    </label>
-  </div>
-</div>
-</div>
-
-<!-- Subcategories Dropdown -->
-<div *ngIf="selectedCategories.length > 0" class="mt-6 space-y-4">
-<div *ngFor="let category of selectedCategories">
-  <label class="block text-gray-700 font-semibold mb-2">{{ category }} Subcategories</label>
-  <select 
-    [(ngModel)]="selectedSubcategories[category]"
-    class="block w-64 p-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300">
-    
-    <option value="">Select</option> <!-- Important! Default blank option -->
-    
-    <option *ngFor="let sub of getSubcategories(category)" [value]="sub">
-      {{ sub }}
-    </option>
-  </select>
-</div>
-</div>
-
-
-    
-
-
-      <!-- Submit Button -->
-      <button type="submit"
-        class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition w-full">
-        Upload Video
+        type="file" 
+        accept="video/*" 
+        (change)="onVideoFilesChange($event)" 
+        multiple 
+        class="hidden" 
+        #fileInput
+      >
+      <button 
+        type="button" 
+        (click)="fileInput.click()" 
+        class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition">
+        Select Videos
       </button>
-</form>
-  </div>
-  <!-- <div *ngIf="selectedFiles.length > 0" class="pt-6">
-    <button (click)="onSubmit()" class="px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition">
-      Upload All
-    </button>
-  </div>
-</div> -->
-  <!-- Uploaded Videos List -->
-  <div class="bg-white rounded-2xl shadow-md p-6">
-    <h2 class="text-xl font-semibold mb-4 text-gray-800">Uploaded Videos</h2>
+    </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Video Card -->
-      <!-- <div *ngFor="let video of uploadedVideos" class="border rounded-xl shadow-sm p-4 hover:shadow-md transition">
-        <video controls class="rounded-md w-full h-48 object-cover mb-3">
-          <source [src]="video.videoUrl" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-        <h3 class="text-lg font-semibold text-gray-800">{{ video.title }}</h3>
-        <p class="text-sm text-gray-500 mb-1">Categories: {{ video.categories.join(', ') }}</p>
-        <p class="text-xs text-gray-400 mb-2">{{ video.description }}</p>
+    <!-- Preview Selected Videos -->
+    <div *ngIf="selectedFiles.length > 0" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mt-8">
+      <div *ngFor="let file of selectedFiles; let i = index" class="relative border rounded-2xl p-4 shadow-md">
         
-        <div class="flex space-x-2">
-          <button class="text-white bg-green-600 hover:bg-green-700 px-4 py-1 rounded text-sm">
-            Edit
-          </button>
-          <button  class="text-white bg-red-600 hover:bg-red-700 px-4 py-1 rounded text-sm">
-            Delete
-          </button>
+        <video [src]="file.videoPreviewUrl" controls class="rounded-xl w-full h-48 object-cover"></video>
+
+        <!-- Thumbnail Upload (Optional) -->
+        <div class="mt-4">
+          <label class="block mb-2 text-sm font-medium">Select Thumbnail (Optional)</label>
+          <input 
+            type="file" 
+            accept="image/*" 
+            (change)="onThumbnailChange($event, i)"
+            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100" 
+          />
+        </div>
+
+        <!-- Thumbnail Preview -->
+        <div *ngIf="file.thumbnailPreviewUrl" class="mt-2">
+          <img [src]="file.thumbnailPreviewUrl" alt="Thumbnail" class="rounded-lg w-full h-32 object-cover" />
+        </div>
+
+        <!-- Remove Button -->
+        <button 
+          type="button"
+          (click)="removeFile(i)" 
+          class="absolute top-2 right-2 bg-red-500  p-1 rounded-full">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+            <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
+          </svg>          
+        </button>
+
+      </div>
+    </div>
+
+
+
+    <!-- Video Description -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+      <textarea
+        [(ngModel)]="videoDescription"
+        name="description"
+        rows="3"
+        placeholder="Enter a short description..."
+        class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      ></textarea>
+    </div>
+
+    <!-- Categories -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">Add to</label>
+      <div class="flex flex-wrap gap-4">
+        <div *ngFor="let category of categories">
+          <label class="inline-flex items-center">
+            <input
+              type="checkbox"
+              [value]="category"
+              (change)="onCategoryChange($event)"
+              class="form-checkbox h-5 w-5 text-blue-600"
+            />
+            <span class="ml-2 text-gray-700">{{ category }}</span>
+          </label>
         </div>
       </div>
     </div>
-  </div> -->
 
+    <!-- Subcategories Dropdown -->
+    <div *ngIf="selectedCategories.length > 0" class="mt-6 space-y-4">
+      <div *ngFor="let category of selectedCategories">
+        <label class="block text-gray-700 font-semibold mb-2">{{ category }} Subcategories</label>
+        <select
+          [(ngModel)]="selectedSubcategories[category]"
+          class="block w-64 p-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
+        >
+          <option value="">Select</option> <!-- Default blank option -->
+          <option *ngFor="let sub of getSubcategories(category)" [value]="sub">
+            {{ sub }}
+          </option>
+        </select>
+      </div>
+    </div>
 
+    <!-- Submit Button -->
+    <button
+      type="submit"
+      class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition w-full"
+    >
+      Upload Video
+    </button>
+  </form>
+</div>
+
+<!-- Uploaded Videos Section -->
+<div class="bg-white rounded-2xl shadow-md p-6">
+  <h2 class="text-xl font-semibold mb-4 text-gray-800">Uploaded Videos</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Video Card (uncomment this when you have the uploaded videos logic ready) -->
+    <!--
+    <div *ngFor="let video of uploadedVideos" class="border rounded-xl shadow-sm p-4 hover:shadow-md transition">
+      <video controls class="rounded-md w-full h-48 object-cover mb-3">
+        <source [src]="video.videoUrl" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <h3 class="text-lg font-semibold text-gray-800">{{ video.title }}</h3>
+      <p class="text-sm text-gray-500 mb-1">Categories: {{ video.categories.join(', ') }}</p>
+      <p class="text-xs text-gray-400 mb-2">{{ video.description }}</p>
+      
+      <div class="flex space-x-2">
+        <button class="text-white bg-green-600 hover:bg-green-700 px-4 py-1 rounded text-sm">
+          Edit
+        </button>
+        <button class="text-white bg-red-600 hover:bg-red-700 px-4 py-1 rounded text-sm">
+          Delete
+        </button>
+      </div>
+    </div>
+    -->
+  </div>
 </div>

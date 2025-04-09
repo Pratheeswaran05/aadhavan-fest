@@ -1,5 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { VideoService } from '../../../core/video.service';
+import { AuthService } from '../../../core/auth.service';
 
 @Component({
   selector: 'app-manage-videos',
@@ -7,14 +11,15 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
   templateUrl: './manage-videos.component.html',
   styleUrl: './manage-videos.component.css'
 })
-export class ManageVideosComponent {
+export class ManageVideosComponent implements OnInit{
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   videoTitle: string = '';
   videoDescription: string = '';
   categories: string[] = ['Highlights', 'Achievements', 'Events', 'Gallery'];
   selectedCategories: string[] = [];
   selectedSubcategories: { [key: string]: string } = {};
-  
+
   subcategoriesMap: { [key: string]: string[] } = {
     Highlights: ['Inside College', 'Outside College'],
     Achievements: ['District', 'State', 'National'],
@@ -30,10 +35,56 @@ export class ManageVideosComponent {
     thumbnailPreviewUrl: SafeUrl | null;
   }[] = [];
 
+  adminId!: number;
+  selectedFile: File | null = null;
+  videoPreviewUrl: string | null = null;
+
   constructor(
     private sanitizer: DomSanitizer,
-    // private videoService: VideoService
+    private videoService: VideoService,
+    private toastr: ToastrService,
+    private router: Router,
+    private authService: AuthService
   ) {}
+
+  // ngOnInit(): void {
+  //   this.authService.getAdmin().subscribe({
+  //     next: (adminData) => {
+  //       if (!adminData || !adminData.id) {
+  //         this.toastr.error('Admin not logged in.', 'Access Denied');
+  //         this.router.navigate(['/admin/login']);
+  //         return;
+  //       }
+  //       this.adminId = adminData.id;
+  //       console.log('Fetched Admin ID:', this.adminId);
+  //     },
+  //     error: (error: Error) => {
+  //       console.error('Error fetching admin data:', error.message);
+  //       this.toastr.error('Failed to fetch admin data.');
+  //       this.router.navigate(['/admin/login']);
+  //     }
+  //   });
+  // }
+  ngOnInit(): void {
+    this.authService.getAdmin().subscribe({
+      next: (adminData) => {
+        if (!adminData) {
+          this.toastr.error('Admin not logged in.', 'Access Denied');
+          this.router.navigate(['/admin/login']);
+          return;
+        }
+        this.adminId = adminData.id; // Now safe and clean!
+        console.log('Fetched Admin ID:', this.adminId);
+      },
+      error: (error: Error) => {
+        console.error('Error fetching admin data:', error.message);
+        this.toastr.error('Failed to fetch admin data.');
+        this.router.navigate(['/admin/login']);
+      }
+    });
+  }
+  
+  
 
   onCategoryChange(event: any) {
     const category = event.target.value;
@@ -51,14 +102,13 @@ export class ManageVideosComponent {
     return this.subcategoriesMap[category] || [];
   }
 
-  // --- VIDEO FILE SELECT ---
   onVideoFilesChange(event: any) {
     const files: FileList = event.target.files;
     if (files && files.length > 0) {
       Array.from(files).forEach(file => {
         if (file.type.startsWith('video/')) {
           const videoUrl = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file));
-          this.selectedFiles.push({
+           this.selectedFiles.push({
             video: file,
             thumbnail: null,
             videoPreviewUrl: videoUrl,
@@ -69,7 +119,6 @@ export class ManageVideosComponent {
     }
   }
 
-  // --- THUMBNAIL SELECT ---
   onThumbnailChange(event: any, index: number) {
     const file = event.target.files[0];
     if (file && file.type.startsWith('image/')) {
@@ -79,7 +128,6 @@ export class ManageVideosComponent {
     }
   }
 
-  // --- DRAG & DROP VIDEO ---
   onVideoDrop(event: DragEvent) {
     event.preventDefault();
     const file = event.dataTransfer?.files[0];
@@ -93,37 +141,52 @@ export class ManageVideosComponent {
       });
     }
   }
+  
+  
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
   }
 
-  // --- REMOVE A FILE ---
   removeFile(index: number) {
     this.selectedFiles.splice(index, 1);
   }
 
-  // --- SUBMIT UPLOAD ---
-  // onSubmit() {
-  //   this.selectedFiles.forEach(filePair => {
-  //     const formData = new FormData();
-  //     formData.append('video', filePair.video);
-  //     if (filePair.thumbnail) {
-  //       formData.append('thumbnail', filePair.thumbnail);
-  //     }
-  //     formData.append('title', this.videoTitle);
-  //     formData.append('description', this.videoDescription);
-  //     formData.append('categories', JSON.stringify(this.selectedCategories));
-  //     formData.append('subcategories', JSON.stringify(this.selectedSubcategories));
+  uploadVideo() {
+    if (this.selectedFiles.length === 0) {
+      this.toastr.error('Please select at least one video to upload.');
+      return;
+    }
 
-  //     this.videoService.uploadVideo(formData).subscribe({
-  //       next: (response) => {
-  //         console.log('Uploaded:', response);
-  //       },
-  //       error: (error) => {
-  //         console.error('Upload failed:', error);
-  //       }
-  //     });
-  //   });
-  // }
+    this.selectedFiles.forEach(fileSet => {
+      const formData = new FormData();
+      formData.append('video', fileSet.video);
+      if (fileSet.thumbnail) {
+        formData.append('thumbnail', fileSet.thumbnail);
+      }
+      formData.append('title', this.videoTitle);
+      formData.append('description', this.videoDescription);
+      formData.append('categories', JSON.stringify(this.selectedCategories));
+      formData.append('subcategories', JSON.stringify(this.selectedSubcategories));
+      formData.append('adminId', this.adminId.toString());
+
+      this.videoService.uploadVideo(formData).subscribe({
+        next: (response) => {
+          this.toastr.success('Video uploaded successfully!');
+          console.log('Upload response:', response);
+
+          // Clear after successful upload
+          this.selectedFiles = [];
+          this.videoTitle = '';
+          this.videoDescription = '';
+          this.selectedCategories = [];
+          this.selectedSubcategories = {};
+        },
+        error: (error) => {
+          console.error('Upload failed:', error);
+          this.toastr.error('Video upload failed.');
+        }
+      });
+    });
+  }
 }

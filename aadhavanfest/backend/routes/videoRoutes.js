@@ -1,20 +1,22 @@
+// const express = require('express');
+// const router = express.Router();
+// const videoController = require('../controllers/videoController');
+// const upload = require('../middleware/uploadMiddleware'); // multer middleware
+
+// upload.single('video') means only one video field is expected
+// router.post('/upload', upload.single('video'), videoController.uploadVideo);
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
-const path = require('path');
 const videoController = require('../controllers/videoController');
-const authMiddleware = require('../middleware/authMiddleware');
+const upload = require('../middleware/uploadMiddleware'); // multer middleware
 
-const storage = multer.diskStorage({
-    destination: './uploads/',
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}${path.extname(file.originalname)}`);
-    }
-});
-
-const upload = multer({ storage });
-
-router.post('/upload', authMiddleware, upload.single('video'), videoController.uploadVideo);
-router.get('/', videoController.getAllVideos);
+// Handle both video and thumbnail uploads
+router.post('/upload',
+  upload.fields([
+    { name: 'video', maxCount: 1 },
+    { name: 'thumbnail', maxCount: 1 }
+  ]),
+  videoController.uploadVideo
+);
 
 module.exports = router;

@@ -13,12 +13,61 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {  }
 
-  login(credentials: { email: string; password: string }): Observable<any> {
-    console.log('Attempting login with:', credentials); // Log credentials (excluding password)
+  // login(credentials: { email: string; password: string }): Observable<any> {
+  //   console.log('Attempting login with:', credentials); // Log credentials (excluding password)
     
-    return this.http.post<{ token: string }>(`${this.apiUrl}/login`, credentials).pipe(
+  //   return this.http.post<{ token: string }>(`${this.apiUrl}/login`, credentials).pipe(
+  //     map(response => {
+  //       console.log('Login successful, received token:', response.token); // Log response token
+  //       return response;
+  //     }),
+  //     catchError(error => {
+  //       console.error('Login error:', error);
+  //       return throwError(() => new Error(error.message || 'Login failed'));
+  //     })
+  //   );
+  // }
+
+  // login(credentials: { email: string; password: string }): Observable<any> {
+  //   console.log('Attempting login with:', credentials);
+    
+  //   return this.http.post<{ token: string; admin: { id: number; name: string; email: string } }>(
+  //     `${this.apiUrl}/login`, 
+  //     credentials
+  //   ).pipe(
+  //     map(response => {
+  //       console.log('Login successful, received token:', response.token);
+  
+  //       // Save token
+  //       localStorage.setItem('adminToken', response.token);
+  
+  //       // Save admin details
+  //       localStorage.setItem('admin', JSON.stringify(response.admin));
+  
+  //       return response;
+  //     }),
+  //     catchError(error => {
+  //       console.error('Login error:', error);
+  //       return throwError(() => new Error(error.message || 'Login failed'));
+  //     })
+  //   );
+  // }
+  
+ 
+  login(credentials: { email: string; password: string }): Observable<any> {
+    console.log('Attempting login with:', credentials);
+    
+    return this.http.post<{ token: string; admin: { id: number; name: string; email: string } }>(
+      `${this.apiUrl}/login`, 
+      credentials
+    ).pipe(
       map(response => {
-        console.log('Login successful, received token:', response.token); // Log response token
+        console.log('Login successful, received token:', response.token);
+  
+        // Save token and admin once
+        localStorage.setItem('adminToken', response.token);
+        localStorage.setItem('admin', JSON.stringify(response.admin));
+  
         return response;
       }),
       catchError(error => {
@@ -27,27 +76,52 @@ export class AuthService {
       })
     );
   }
-
+  
+  
   setToken(token: string): void {
     localStorage.setItem('adminToken', token);
-  }
-
-  isLoggedIn(): boolean {
-    const token = this.getToken();
-    // console.log("AuthService: Checking login state. Token:", token);
-    return !!token;
-  }
-
-  logout(): void {
-    localStorage.removeItem('adminToken');
-    window.location.href = '/admin/login';   
   }
 
   getToken(): string | null {
     return localStorage.getItem('adminToken');
   }
 
-  getAdmin(): Observable<string> {
+  isLoggedIn(): boolean {
+    const token = this.getToken();
+    return !!token;
+  }
+
+  logout(): void {
+    this.clearSession();
+    window.location.href = '/admin/login';
+  }
+
+  // getAdmin(): Observable<string> {
+  //   const token = this.getToken();
+  //   if (!token) {
+  //     console.error('No token found in localStorage');
+  //     return throwError(() => new Error('No token found'));
+  //   }
+
+  //   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  //   console.log('Fetching admin profile with token:', token);
+
+  //   return this.http.get<{ id: number; name: string; email: string }>(
+  //     `${this.apiUrl}/profile`, { headers }
+  //   ).pipe(
+  //     map(response => {
+  //       console.log('Fetched admin profile:', response.name);
+  //       return response.name;
+  //     }),
+  //     catchError(error => {
+  //       console.error('Failed to fetch admin name:', error);
+  //       return throwError(() => new Error(error.message || 'Failed to fetch admin name'));
+  //     })
+  //   );
+  // }
+
+
+  getAdmin(): Observable<{ id: number; name: string; email: string }> {
     const token = this.getToken();
     if (!token) {
       console.error('No token found in localStorage');
@@ -61,14 +135,31 @@ export class AuthService {
       `${this.apiUrl}/profile`, { headers }
     ).pipe(
       map(response => {
-        console.log('Fetched admin profile:', response.name);
-        return response.name;
+        console.log('Fetched admin profile:', response);
+        return response; // return full object { id, name, email }
       }),
       catchError(error => {
-        console.error('Failed to fetch admin name:', error);
-        return throwError(() => new Error(error.message || 'Failed to fetch admin name'));
+        console.error('Failed to fetch admin profile:', error);
+        return throwError(() => new Error(error.message || 'Failed to fetch admin profile'));
       })
     );
   }
+
   
+  setAdmin(admin: any): void {
+    localStorage.setItem('admin', JSON.stringify(admin));
+  }
+
+  getAdminData() {
+    const adminData = localStorage.getItem('admin');
+    if (adminData) {
+      return JSON.parse(adminData);
+    }
+    return null;
+  }
+
+  clearSession(): void {
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('admin');
+  }
 }
