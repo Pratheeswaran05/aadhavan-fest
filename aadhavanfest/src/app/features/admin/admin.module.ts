@@ -11,6 +11,7 @@ import { OverviewComponent } from './overview/overview.component';
 import { GalleryManagementComponent } from './gallery-management/gallery-management.component';
 import { ManageVideosComponent } from './manage-videos/manage-videos.component';
 import { ManageCategoriesComponent } from './manage-categories/manage-categories.component';
+import { ManagePhotosComponent } from './manage-photos/manage-photos.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { ManageCategoriesComponent } from './manage-categories/manage-categories
     OverviewComponent,
     GalleryManagementComponent,
     ManageVideosComponent,
-    ManageCategoriesComponent
+    ManageCategoriesComponent,
+    ManagePhotosComponent
   ],
   imports: [
     CommonModule,
