@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-highlights',
@@ -6,7 +7,7 @@ import { Component } from '@angular/core';
   templateUrl: './highlights.component.html',
   styleUrl: './highlights.component.css'
 })
-export class HighlightsComponent {
+export class HighlightsComponent implements OnInit{
 
   // selectedTab: string = 'inside';
 
@@ -17,9 +18,22 @@ export class HighlightsComponent {
 
     selectedTab: 'inside' | 'outside' = 'inside'; // default value
 
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const tab = params.get('tab') as 'inside' | 'outside';
+      if (tab === 'inside' || tab === 'outside') {
+        this.selectedTab = tab;
+      }
+    });
+  }
+
   selectTab(tab: 'inside' | 'outside') {
     this.selectedTab = tab;
   }
+  
+
 
   shareVideo(video: any) {
     const url = `${window.location.origin}/videos/${video.id}`;

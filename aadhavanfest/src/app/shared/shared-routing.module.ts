@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { HighlightsComponent } from '../features/highlights/highlights/highlights.component';
+import { AchievementsComponent } from '../features/achievements/achievements/achievements.component';
 
 const routes: Routes = [
   {
@@ -16,7 +18,16 @@ const routes: Routes = [
   {
       path : 'sidebar',
       component : SidebarComponent
-    }
+    },
+
+    {
+      path: 'highlights/:tab',
+      component: HighlightsComponent
+    },
+    {
+      path: 'achievements/:tab',
+      component: AchievementsComponent
+    },
 ];
 
 @NgModule({
