@@ -1,39 +1,66 @@
 <div class="p-6 max-w-7xl mx-auto">
-    <h2 class="text-3xl font-bold text-center mb-8">Gallery</h2>
-  
-    <!-- Filters -->
-    <div class="flex flex-wrap justify-center gap-4 mb-8">
-      <button 
-        *ngFor="let cat of categories" 
-        (click)="filterGallery(cat)"
-        [ngClass]="{'bg-gray-300': selectedCategory === cat, 'bg-gray-200': selectedCategory !== cat}" 
-        class="px-4 py-2 rounded-full hover:bg-gray-300">
-        {{ cat | titlecase }}
-      </button>
-    </div>
-  
-    <!-- Masonry Gallery -->
-    <div class="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+  <h2 class="text-3xl font-bold text-center mb-8">Gallery</h2>
+
+  <!-- Filters -->
+  <!-- <div class="flex flex-wrap justify-center gap-4 mb-8">
+    <button 
+      *ngFor="let cat of categories" 
+      (click)="filterGallery(cat)"
+      [ngClass]="{'bg-gray-300': selectedCategory === cat, 'bg-gray-200': selectedCategory !== cat}" 
+      class="px-4 py-2 rounded-full hover:bg-gray-300">
+      {{ cat | titlecase }}
+    </button>
+  </div> -->
+
+  <!-- Masonry Gallery -->
+  <div class="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+    <div 
+      *ngFor="let item of filteredItems" 
+      (click)="openLightbox(item.src)" 
+      class="relative group overflow-hidden"
+      [ngClass]="{'cursor-pointer': item.type === 'image'}">
+      
+      <!-- Image Item -->
       <img 
-        *ngFor="let image of filteredImages" 
-        (click)="openLightbox(image.src)" 
-        [attr.data-category]="image.category"
-        class="w-full rounded-lg hover:opacity-90 transition cursor-pointer" 
-        [src]="image.src" 
-        alt="Gallery Image" />
-    </div>
-  
-    <!-- Load More Button -->
-    <div class="flex justify-center mt-8">
-      <button (click)="loadMoreImages()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-        Load More
-      </button>
-    </div>
-  
-    <!-- Lightbox Popup -->
-    <div *ngIf="lightboxOpen" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-      <img class="max-h-[90vh] max-w-[90vw] rounded-lg" [src]="lightboxImage" alt="Full View" />
-      <button (click)="closeLightbox()" class="absolute top-6 right-6 text-white text-3xl">&times;</button>
+        *ngIf="item.type === 'image'" 
+        [src]="item.src" 
+        alt="Gallery Image" 
+        class="w-full rounded-lg transition-transform transform hover:scale-105 hover:opacity-90" />
+      
+      <!-- Video Item -->
+      <video 
+        *ngIf="item.type === 'video'" 
+        [src]="item.src" 
+        class="w-full rounded-lg transition-transform transform hover:scale-105 hover:opacity-90" 
+        muted 
+        loop 
+        autoplay
+        playsinline
+        preload="metadata">
+      </video>
+
+      <!-- Hover Play Icon for Video -->
+      <div *ngIf="item.type === 'video'" class="absolute inset-0 flex justify-center items-center bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity">
+        <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 3l14 9-14 9V3z"></path>
+        </svg>
+      </div>
     </div>
   </div>
-  
+
+  <!-- Load More Button -->
+  <div class="flex justify-center mt-8">
+    <button (click)="loadMoreItems()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+      Load More
+    </button>
+  </div>
+
+  <!-- Lightbox Popup -->
+  <div *ngIf="lightboxOpen" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+    <img *ngIf="lightboxType === 'image'" class="max-h-[90vh] max-w-[90vw] rounded-lg" [src]="lightboxImage" alt="Full View" />
+    <video *ngIf="lightboxType === 'video'" class="max-h-[90vh] max-w-[90vw] rounded-lg" controls>
+      <source [src]="lightboxVideo" type="video/mp4" />
+    </video>
+    <button (click)="closeLightbox()" class="absolute top-6 right-6 text-white text-3xl">&times;</button>
+  </div>
+</div>
