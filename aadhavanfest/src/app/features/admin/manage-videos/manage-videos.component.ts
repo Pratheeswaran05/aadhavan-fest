@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { VideoService } from '../../../core/video.service';
 import { AuthService } from '../../../core/auth.service';
+import { UploadService } from '../../../core/upload.service';
 
 @Component({
   selector: 'app-manage-videos',
@@ -41,30 +42,12 @@ export class ManageVideosComponent implements OnInit{
 
   constructor(
     private sanitizer: DomSanitizer,
-    private videoService: VideoService,
+    private uploadService: UploadService,
     private toastr: ToastrService,
     private router: Router,
     private authService: AuthService
   ) {}
 
-  // ngOnInit(): void {
-  //   this.authService.getAdmin().subscribe({
-  //     next: (adminData) => {
-  //       if (!adminData || !adminData.id) {
-  //         this.toastr.error('Admin not logged in.', 'Access Denied');
-  //         this.router.navigate(['/admin/login']);
-  //         return;
-  //       }
-  //       this.adminId = adminData.id;
-  //       console.log('Fetched Admin ID:', this.adminId);
-  //     },
-  //     error: (error: Error) => {
-  //       console.error('Error fetching admin data:', error.message);
-  //       this.toastr.error('Failed to fetch admin data.');
-  //       this.router.navigate(['/admin/login']);
-  //     }
-  //   });
-  // }
   ngOnInit(): void {
     this.authService.getAdmin().subscribe({
       next: (adminData) => {
@@ -170,7 +153,7 @@ export class ManageVideosComponent implements OnInit{
       formData.append('subcategories', JSON.stringify(this.selectedSubcategories));
       formData.append('adminId', this.adminId.toString());
 
-      this.videoService.uploadVideo(formData).subscribe({
+      this.uploadService.uploadVideo(formData).subscribe({
         next: (response) => {
           this.toastr.success('Video uploaded successfully!');
           console.log('Upload response:', response);

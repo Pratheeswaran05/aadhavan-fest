@@ -6,10 +6,10 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  // private apiUrl = 'http://localhost:5000/api/admin';
+  private apiUrl = 'http://localhost:5000/api/admin';
 
   // render url
-  private apiUrl = 'https://af-backend-0ab0.onrender.com/api/admin';
+  // private apiUrl = 'https://af-backend-0ab0.onrender.com/api/admin';
 
   constructor(private http: HttpClient) {}
   
@@ -19,15 +19,5 @@ export class ApiService {
     });
   }
 
-
-  // Upload multiple videos
-  // uploadVideos(formData: FormData): Observable<any> {
-  //   const headers = new HttpHeaders({
-  //     Authorization: `Bearer ${localStorage.getItem('token')}`, // Ensure admin is authenticated
-  //   });
-
-  //   return this.http.post(`${this.apiUrl}/videos/upload`, formData, { headers });
-  // }
-  
 }
 
