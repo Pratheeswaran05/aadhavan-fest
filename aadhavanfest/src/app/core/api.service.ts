@@ -6,7 +6,10 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:5000/api/admin';
+  // private apiUrl = 'http://localhost:5000/api/admin';
+
+  // render url
+  private apiUrl = 'https://af-backend-0ab0.onrender.com/api/admin';
 
   constructor(private http: HttpClient) {}
   
