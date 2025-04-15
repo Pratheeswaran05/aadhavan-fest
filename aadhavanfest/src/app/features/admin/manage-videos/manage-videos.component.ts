@@ -188,6 +188,56 @@ export class ManageVideosComponent implements OnInit{
   //   });
   // }
 
+  // uploadVideo() {
+  //   if (this.selectedFiles.length === 0) {
+  //     this.toastr.error('Please select at least one video to upload.');
+  //     return;
+  //   }
+  
+  //   this.isLoading = true; // Start loading
+  
+  //   const fileSet = this.selectedFiles[0];
+  //   const formData = new FormData();
+  //   formData.append('video', fileSet.video);
+  //   if (fileSet.thumbnail) {
+  //     formData.append('thumbnail', fileSet.thumbnail);
+  //   }
+  //   formData.append('title', this.videoTitle);
+  //   formData.append('description', this.videoDescription);
+  //   formData.append('categories', JSON.stringify(this.selectedCategories));
+  //   // formData.append('subcategories', JSON.stringify(this.selectedSubcategories));
+  //   // if (this.selectedSubcategories && Object.keys(this.selectedSubcategories).length > 0) {
+  //   //   formData.append('subcategories', JSON.stringify(this.selectedSubcategories));
+  //   // }
+  //   formData.append('subcategories', JSON.stringify(this.selectedSubcategories));
+  //   formData.append('adminId', this.adminId.toString());
+  
+  //   // Log the FormData to inspect what is being sent
+  // for (let pair of formData.entries()) {
+  //   console.log(pair[0] + ', ' + pair[1]);
+  // }
+
+  //   this.uploadService.uploadVideo(formData).subscribe({
+  //     next: (response) => {
+  //       this.toastr.success('Video uploaded successfully!');
+  //       console.log('Upload response:', response);
+  
+  //       this.selectedFiles = [];
+  //       this.videoTitle = '';
+  //       this.videoDescription = '';
+  //       this.selectedCategories = [];
+  //       this.selectedSubcategories = {};
+  
+  //       this.isLoading = false; // Stop loading
+  //     },
+  //     error: (error) => {
+  //       console.error('Upload failed:', error);
+  //       this.toastr.error('Video upload failed.');
+  //       this.isLoading = false; // Stop loading
+  //     }
+  //   });
+  // }
+  
   uploadVideo() {
     if (this.selectedFiles.length === 0) {
       this.toastr.error('Please select at least one video to upload.');
@@ -205,11 +255,20 @@ export class ManageVideosComponent implements OnInit{
     formData.append('title', this.videoTitle);
     formData.append('description', this.videoDescription);
     formData.append('categories', JSON.stringify(this.selectedCategories));
-    // formData.append('subcategories', JSON.stringify(this.selectedSubcategories));
+  
+    // Ensure subcategories is a valid object
     if (this.selectedSubcategories && Object.keys(this.selectedSubcategories).length > 0) {
-      formData.append('subcategories', JSON.stringify(this.selectedSubcategories));
+      formData.append('subcategories', JSON.stringify(this.selectedSubcategories)); // Serialize to string for FormData
+    } else {
+      formData.append('subcategories', '{}'); // Append an empty object if no subcategories selected
     }
+  
     formData.append('adminId', this.adminId.toString());
+  
+    // Log the FormData to inspect what is being sent
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ', ' + pair[1]);
+    }
   
     this.uploadService.uploadVideo(formData).subscribe({
       next: (response) => {
@@ -231,5 +290,4 @@ export class ManageVideosComponent implements OnInit{
       }
     });
   }
-  
   }

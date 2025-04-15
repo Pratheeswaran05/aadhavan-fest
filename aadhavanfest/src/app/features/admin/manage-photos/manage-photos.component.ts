@@ -96,11 +96,12 @@ export class ManagePhotosComponent {
 
   // Get subcategories dynamically
   getSubcategories(category: string): string[] {
-    const subcategoriesMap: { [key: string]: string[] } = {
-      Festivals: ['Navratri', 'Onam', 'Christmas', 'Other'],
-      Workshops: ['Dance Workshop', 'Music Workshop', 'Art Workshop'],
-      Competitions: ['Dance', 'Singing', 'Drama', 'Quiz'],
-      Gallery: ['Annual Day', 'Farewell', 'Independence Day']
+    const  subcategoriesMap: { [key: string]: string[] } = {
+      Highlights: ['Inside College', 'Outside College'],
+      Achievements: ['District', 'State', 'National'],
+      Events: ['Upcoming Events', 'Past Events'],
+      Gallery: ['Photos', 'Videos'],
+      College: ['About', 'Facilities', 'Clubs']
     };
     return subcategoriesMap[category] || [];
   }
