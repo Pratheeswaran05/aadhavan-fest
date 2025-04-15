@@ -12,6 +12,7 @@ import { GalleryManagementComponent } from './gallery-management/gallery-managem
 import { ManageVideosComponent } from './manage-videos/manage-videos.component';
 import { ManageCategoriesComponent } from './manage-categories/manage-categories.component';
 import { ManagePhotosComponent } from './manage-photos/manage-photos.component';
+import { SharedModule } from '../../shared/shared.module';
 
 
 @NgModule({
@@ -30,6 +31,7 @@ import { ManagePhotosComponent } from './manage-photos/manage-photos.component';
     AdminRoutingModule,
     FormsModule,
     ToastrModule.forRoot(),
+    SharedModule 
   ]
 })
 export class AdminModule { }

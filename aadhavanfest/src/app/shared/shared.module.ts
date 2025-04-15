@@ -6,19 +6,25 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import { RouterModule } from '@angular/router';
+import { PreloaderComponent } from './preloader/preloader.component';
+
 
 
 @NgModule({
   declarations: [
     SidebarComponent,
     FooterComponent,
-    HeaderComponent
+    HeaderComponent,
+    PreloaderComponent,
   ],
   imports: [
     CommonModule,
     SharedRoutingModule,
     RouterModule
   ],
-  exports: [HeaderComponent]
+  exports: [
+    HeaderComponent,
+    PreloaderComponent,
+  ]
 })
 export class SharedModule { }

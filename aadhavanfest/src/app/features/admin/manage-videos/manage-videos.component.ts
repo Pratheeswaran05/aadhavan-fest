@@ -2,7 +2,6 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { VideoService } from '../../../core/video.service';
 import { AuthService } from '../../../core/auth.service';
 import { UploadService } from '../../../core/upload.service';
 
@@ -39,6 +38,9 @@ export class ManageVideosComponent implements OnInit{
   adminId!: number;
   selectedFile: File | null = null;
   videoPreviewUrl: string | null = null;
+
+  isLoading: boolean = false; // Track loading state for preloader
+
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -134,42 +136,100 @@ export class ManageVideosComponent implements OnInit{
   removeFile(index: number) {
     this.selectedFiles.splice(index, 1);
   }
+  // uploadVideo() {
+  //   if (this.selectedFiles.length === 0) {
+  //     this.toastr.error('Please select at least one video to upload.');
+  //     return;
+  //   }
+  
+  //   this.isLoading = true; // Start loading before uploads begin
+  
+  //   let uploadCount = 0;
+  
+  //   this.selectedFiles.forEach(fileSet => {
+  //     const formData = new FormData();
+  //     formData.append('video', fileSet.video);
+  //     if (fileSet.thumbnail) {
+  //       formData.append('thumbnail', fileSet.thumbnail);
+  //     }
+  //     formData.append('title', this.videoTitle);
+  //     formData.append('description', this.videoDescription);
+  //     formData.append('categories', JSON.stringify(this.selectedCategories));
+  //     formData.append('subcategories', JSON.stringify(this.selectedSubcategories));
+  //     formData.append('adminId', this.adminId.toString());
+  
+  //     this.uploadService.uploadVideo(formData).subscribe({
+  //       next: (response) => {
+  //         this.toastr.success('Video uploaded successfully!');
+  //         console.log('Upload response:', response);
+  
+  //         // Clear after successful upload
+  //         this.selectedFiles = [];
+  //         this.videoTitle = '';
+  //         this.videoDescription = '';
+  //         this.selectedCategories = [];
+  //         this.selectedSubcategories = {};
+  
+  //         uploadCount++;
+  //         if (uploadCount === this.selectedFiles.length) {
+  //           this.isLoading = false; // Stop loading after all uploads
+  //         }
+  //       },
+  //       error: (error) => {
+  //         console.error('Upload failed:', error);
+  //         this.toastr.error('Video upload failed.');
+  
+  //         uploadCount++;
+  //         if (uploadCount === this.selectedFiles.length) {
+  //           this.isLoading = false; // Stop loading even if error
+  //         }
+  //       }
+  //     });
+  //   });
+  // }
 
   uploadVideo() {
     if (this.selectedFiles.length === 0) {
       this.toastr.error('Please select at least one video to upload.');
       return;
     }
-
-    this.selectedFiles.forEach(fileSet => {
-      const formData = new FormData();
-      formData.append('video', fileSet.video);
-      if (fileSet.thumbnail) {
-        formData.append('thumbnail', fileSet.thumbnail);
-      }
-      formData.append('title', this.videoTitle);
-      formData.append('description', this.videoDescription);
-      formData.append('categories', JSON.stringify(this.selectedCategories));
+  
+    this.isLoading = true; // Start loading
+  
+    const fileSet = this.selectedFiles[0];
+    const formData = new FormData();
+    formData.append('video', fileSet.video);
+    if (fileSet.thumbnail) {
+      formData.append('thumbnail', fileSet.thumbnail);
+    }
+    formData.append('title', this.videoTitle);
+    formData.append('description', this.videoDescription);
+    formData.append('categories', JSON.stringify(this.selectedCategories));
+    // formData.append('subcategories', JSON.stringify(this.selectedSubcategories));
+    if (this.selectedSubcategories && Object.keys(this.selectedSubcategories).length > 0) {
       formData.append('subcategories', JSON.stringify(this.selectedSubcategories));
-      formData.append('adminId', this.adminId.toString());
-
-      this.uploadService.uploadVideo(formData).subscribe({
-        next: (response) => {
-          this.toastr.success('Video uploaded successfully!');
-          console.log('Upload response:', response);
-
-          // Clear after successful upload
-          this.selectedFiles = [];
-          this.videoTitle = '';
-          this.videoDescription = '';
-          this.selectedCategories = [];
-          this.selectedSubcategories = {};
-        },
-        error: (error) => {
-          console.error('Upload failed:', error);
-          this.toastr.error('Video upload failed.');
-        }
-      });
+    }
+    formData.append('adminId', this.adminId.toString());
+  
+    this.uploadService.uploadVideo(formData).subscribe({
+      next: (response) => {
+        this.toastr.success('Video uploaded successfully!');
+        console.log('Upload response:', response);
+  
+        this.selectedFiles = [];
+        this.videoTitle = '';
+        this.videoDescription = '';
+        this.selectedCategories = [];
+        this.selectedSubcategories = {};
+  
+        this.isLoading = false; // Stop loading
+      },
+      error: (error) => {
+        console.error('Upload failed:', error);
+        this.toastr.error('Video upload failed.');
+        this.isLoading = false; // Stop loading
+      }
     });
   }
-}
+  
+  }

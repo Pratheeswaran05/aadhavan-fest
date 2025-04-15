@@ -28,8 +28,10 @@ import { FormsModule } from '@angular/forms';
       progressBar: true,
     }),
     SharedModule,
+    
   ],
-  providers: [],
+  providers: [
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

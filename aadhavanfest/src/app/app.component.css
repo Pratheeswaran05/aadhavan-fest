@@ -9,3 +9,17 @@ main {
     padding-top: 100px;
   }
   
+/* Background dimming and blur effect when loading */
+.loading {
+  opacity: 0.5;
+  pointer-events: none;
+  transition: opacity 0.5s ease, backdrop-filter 0.5s ease;
+  backdrop-filter: blur(10px); /* Blur effect */
+}
+
+/* Remove the blur and dimming when not loading */
+:not(.loading) {
+  opacity: 1;
+  backdrop-filter: none;
+  transition: opacity 0.5s ease;
+}

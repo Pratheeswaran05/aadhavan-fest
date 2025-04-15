@@ -1,4 +1,19 @@
+<!-- <app-preloader *ngIf="isLoading"></app-preloader>
+
 <app-header *ngIf="!isAuthPage"></app-header>
+
 <main>
+  <router-outlet></router-outlet>
+</main> -->
+
+
+<!-- Show Preloader when isLoading is true -->
+<app-preloader *ngIf="isLoading"></app-preloader>
+
+<!-- Show the header only if it's not an Auth page -->
+<app-header *ngIf="!isAuthPage"></app-header>
+
+<!-- Main content with blurred background when loading -->
+<main [class.loading]="isLoading">
   <router-outlet></router-outlet>
 </main>

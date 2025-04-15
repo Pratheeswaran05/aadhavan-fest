@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { PreloaderComponent } from './preloader/preloader.component';
 
 const routes: Routes = [
   {
@@ -16,7 +17,11 @@ const routes: Routes = [
   {
       path : 'sidebar',
       component : SidebarComponent
-    }
+    },
+  // {
+  //     path : 'preloader',
+  //     component : PreloaderComponent
+  //   }
 ];
 
 @NgModule({

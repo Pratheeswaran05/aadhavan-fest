@@ -1,6 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { VideoService } from '../../../core/video.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/auth.service';
@@ -31,7 +30,6 @@ export class ManagePhotosComponent {
 
     constructor(
       private sanitizer: DomSanitizer,
-      private videoService: VideoService,
       private toastr: ToastrService,
       private router: Router,
       private authService: AuthService

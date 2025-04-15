@@ -4,3 +4,20 @@
     /* width: 100vw; */
   }
   
+
+/* Optionally, you can disable the form fields while loading */
+.login-container {
+  position: relative;
+}
+
+button[disabled] {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.login-container .loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

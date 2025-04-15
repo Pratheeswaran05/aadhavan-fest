@@ -10,11 +10,20 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 export class AppComponent {
   title = 'aadhavanfest';
   isAuthPage = false;
+  isLoading = true;
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute) {
-    this.router.events.subscribe(() => {
-      this.checkAuthPage();
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.checkAuthPage();
+
+        // after each navigation, hide loader
+        setTimeout(() => {
+          this.isLoading = false;
+        }, 500); // 0.5s delay after route change (feels smoother)
+      }
     });
+
     this.checkAuthPage(); // Check route on refresh
   }
 
