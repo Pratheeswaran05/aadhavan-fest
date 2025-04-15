@@ -11,14 +11,16 @@ import { UploadService } from '../../../core/upload.service';
   templateUrl: './manage-videos.component.html',
   styleUrl: './manage-videos.component.css'
 })
-export class ManageVideosComponent implements OnInit{
+export class ManageVideosComponent implements OnInit {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   videoTitle: string = '';
   videoDescription: string = '';
   categories: string[] = ['Highlights', 'Achievements', 'Events', 'Gallery'];
   selectedCategories: string[] = [];
-  selectedSubcategories: { [key: string]: string } = {};
+  // selectedSubcategories: { [key: string]: string } = {};
+  selectedSubcategories: { [key: string]: string[] } = {}; // Fix the type to string[]
+
 
   subcategoriesMap: { [key: string]: string[] } = {
     Highlights: ['Inside College', 'Outside College'],
@@ -27,6 +29,10 @@ export class ManageVideosComponent implements OnInit{
     Gallery: ['Photos', 'Videos'],
     College: ['About', 'Facilities', 'Clubs']
   };
+  // Define getSubcategories method
+  getSubcategories(category: string): string[] {
+    return this.subcategoriesMap[category] || [];
+  }
 
   selectedFiles: {
     video: File;
@@ -39,8 +45,7 @@ export class ManageVideosComponent implements OnInit{
   selectedFile: File | null = null;
   videoPreviewUrl: string | null = null;
 
-  isLoading: boolean = false; // Track loading state for preloader
-
+  isLoading: boolean = false;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -58,42 +63,74 @@ export class ManageVideosComponent implements OnInit{
           this.router.navigate(['/admin/login']);
           return;
         }
-        this.adminId = adminData.id; // Now safe and clean!
-        console.log('Fetched Admin ID:', this.adminId);
+        this.adminId = adminData.id;
       },
-      error: (error: Error) => {
-        console.error('Error fetching admin data:', error.message);
+      error: () => {
         this.toastr.error('Failed to fetch admin data.');
         this.router.navigate(['/admin/login']);
       }
     });
   }
-  
-  
+
+  // onCategoryChange(event: any) {
+  //   const category = event.target.value;
+  //   const checked = event.target.checked;
+
+  //   if (checked) {
+  //     this.selectedCategories.push(category);
+  //   } else {
+  //     this.selectedCategories = this.selectedCategories.filter(c => c !== category);
+  //     delete this.selectedSubcategories[category];
+  //   }
+  // }
+
+  // getSubcategories(category: string): string[] {
+  //   return this.subcategoriesMap[category] || [];
+  // }
 
   onCategoryChange(event: any) {
     const category = event.target.value;
     const checked = event.target.checked;
-
+  
     if (checked) {
       this.selectedCategories.push(category);
     } else {
       this.selectedCategories = this.selectedCategories.filter(c => c !== category);
-      delete this.selectedSubcategories[category];
+      delete this.selectedSubcategories[category]; // Remove any subcategories if the category is unchecked
     }
   }
-
-  getSubcategories(category: string): string[] {
-    return this.subcategoriesMap[category] || [];
+  
+  onSubcategoryChange(event: any, category: string) {
+    const subcategory = event.target.value;
+    const checked = event.target.checked;
+  
+    if (checked) {
+      // Store the subcategory under the appropriate category
+      if (!this.selectedSubcategories[category]) {
+        this.selectedSubcategories[category] = [];
+      }
+      this.selectedSubcategories[category].push(subcategory);
+    } else {
+      // Remove subcategory if unchecked
+      this.selectedSubcategories[category] = this.selectedSubcategories[category].filter(
+        (sub) => sub !== subcategory
+      );
+      if (this.selectedSubcategories[category].length === 0) {
+        delete this.selectedSubcategories[category]; // Remove the category if no subcategories are selected
+      }
+    }
+  
+    console.log('Selected Subcategories:', this.selectedSubcategories);
   }
 
+  
   onVideoFilesChange(event: any) {
     const files: FileList = event.target.files;
     if (files && files.length > 0) {
       Array.from(files).forEach(file => {
         if (file.type.startsWith('video/')) {
           const videoUrl = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file));
-           this.selectedFiles.push({
+          this.selectedFiles.push({
             video: file,
             thumbnail: null,
             videoPreviewUrl: videoUrl,
@@ -126,8 +163,6 @@ export class ManageVideosComponent implements OnInit{
       });
     }
   }
-  
-  
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
@@ -136,123 +171,104 @@ export class ManageVideosComponent implements OnInit{
   removeFile(index: number) {
     this.selectedFiles.splice(index, 1);
   }
-  
-//   uploadVideo() {
-//     if (this.selectedFiles.length === 0) {
-//       this.toastr.error('Please select at least one video to upload.');
-//       return;
-//     }
-  
-//     this.isLoading = true; // Start loading
-  
-//     const fileSet = this.selectedFiles[0];
-//     const formData = new FormData();
-//     formData.append('video', fileSet.video);
-//     if (fileSet.thumbnail) {
-//       formData.append('thumbnail', fileSet.thumbnail);
-//     }
-//     formData.append('title', this.videoTitle);
-//     formData.append('description', this.videoDescription);
-//     formData.append('categories', JSON.stringify(this.selectedCategories));
-  
-//     const formattedSubcategories: { [key: string]: string } = {};
 
-// for (const category in this.selectedSubcategories) {
-//   const sub = this.selectedSubcategories[category];
-//   if (sub) {
-//     const key = sub.toLowerCase().replace(/\s+/g, '_'); // Convert "Inside College" → "inside_college"
-//     formattedSubcategories[key] = 'true';
-//   }
-// }
+  // uploadVideo() {
+  //   if (this.selectedFiles.length === 0) {
+  //     this.toastr.error('Please select at least one video to upload.');
+  //     return;
+  //   }
 
-// formData.append('subcategories', JSON.stringify(formattedSubcategories));
+  //   this.isLoading = true;
 
+  //   const fileSet = this.selectedFiles[0];
+  //   const formData = new FormData();
+  //   formData.append('video', fileSet.video);
+  //   if (fileSet.thumbnail) {
+  //     formData.append('thumbnail', fileSet.thumbnail);
+  //   }
+
+  //   formData.append('title', this.videoTitle);
+  //   formData.append('description', this.videoDescription);
+  //   formData.append('categories', JSON.stringify(this.selectedCategories));
+
+  //   const formattedSubcategories: { [key: string]: string } = {};
+  //   for (const category in this.selectedSubcategories) {
+  //     const sub = this.selectedSubcategories[category];
+  //     if (sub) {
+  //       const key = sub.toLowerCase().replace(/\s+/g, '_');
+  //       formattedSubcategories[key] = 'true';
+  //     }
+  //   }
+  //   // Log the formatted subcategories
+  //   for (const key in formattedSubcategories) {
+  //     console.log(`${key}: ${formattedSubcategories[key]}`);
+  //   }
     
-  
-//     formData.append('adminId', this.adminId.toString());
-  
-//     // Log the FormData to inspect what is being sent
-//     for (let pair of formData.entries()) {
-//       console.log(pair[0] + ', ' + pair[1]);
-//     }
-  
-//     this.uploadService.uploadVideo(formData).subscribe({
-//       next: (response) => {
-//         this.toastr.success('Video uploaded successfully!');
-//         console.log('Upload response:', response);
-  
-//         this.selectedFiles = [];
-//         this.videoTitle = '';
-//         this.videoDescription = '';
-//         this.selectedCategories = [];
-//         this.selectedSubcategories = {};
-  
-//         this.isLoading = false; // Stop loading
-//       },
-//       error: (error) => {
-//         console.error('Upload failed:', error);
-//         this.toastr.error('Video upload failed.');
-//         this.isLoading = false; // Stop loading
-//       }
-//     });
-//   }
+  //   formData.append('subcategories', JSON.stringify(formattedSubcategories));
 
-uploadVideo() {
-  if (this.selectedFiles.length === 0) {
-    this.toastr.error('Please select at least one video to upload.');
-    return;
-  }
+  //   formData.append('adminId', this.adminId.toString());
 
-  this.isLoading = true; // Start loading
-
-  const fileSet = this.selectedFiles[0];
-  const formData = new FormData();
-  formData.append('video', fileSet.video);
-  if (fileSet.thumbnail) {
-    formData.append('thumbnail', fileSet.thumbnail);
-  }
-  formData.append('title', this.videoTitle);
-  formData.append('description', this.videoDescription);
-  formData.append('categories', JSON.stringify(this.selectedCategories));
-
-  // ✅ New logic to format subcategories like "Inside College" → "inside_college"
-  const formattedSubcategories: { [key: string]: string } = {};
-  for (const category in this.selectedSubcategories) {
-    const sub = this.selectedSubcategories[category];
-    if (sub) {
-      const key = sub.toLowerCase().replace(/\s+/g, '_');
-      formattedSubcategories[key] = 'true';
+  //   this.uploadService.uploadVideo(formData).subscribe({
+  //     next: () => {
+  //       this.toastr.success('Video uploaded successfully!');
+  //       this.selectedFiles = [];
+  //       this.videoTitle = '';
+  //       this.videoDescription = '';
+  //       this.selectedCategories = [];
+  //       this.selectedSubcategories = {};
+  //       this.isLoading = false;
+  //     },
+  //     error: () => {
+  //       this.toastr.error('Video upload failed.');
+  //       this.isLoading = false;
+  //     }
+  //   });
+  // }
+  uploadVideo() {
+    if (this.selectedFiles.length === 0) {
+      this.toastr.error('Please select at least one video to upload.');
+      return;
     }
-  }
-  formData.append('subcategories', JSON.stringify(formattedSubcategories));
-
-  formData.append('adminId', this.adminId.toString());
-
-  // Log the FormData to inspect what is being sent
-  for (let pair of formData.entries()) {
-    console.log(pair[0] + ', ' + pair[1]);
-  }
-
-  this.uploadService.uploadVideo(formData).subscribe({
-    next: (response) => {
-      this.toastr.success('Video uploaded successfully!');
-      console.log('Upload response:', response);
-
-      // Reset form fields
-      this.selectedFiles = [];
-      this.videoTitle = '';
-      this.videoDescription = '';
-      this.selectedCategories = [];
-      this.selectedSubcategories = {};
-
-      this.isLoading = false; // Stop loading
-    },
-    error: (error) => {
-      console.error('Upload failed:', error);
-      this.toastr.error('Video upload failed.');
-      this.isLoading = false; // Stop loading
+  
+    this.isLoading = true;
+  
+    const fileSet = this.selectedFiles[0];
+    const formData = new FormData();
+    formData.append('video', fileSet.video);
+    if (fileSet.thumbnail) {
+      formData.append('thumbnail', fileSet.thumbnail);
     }
-  });
-}
-
+  
+    formData.append('title', this.videoTitle);
+    formData.append('description', this.videoDescription);
+    formData.append('categories', JSON.stringify(this.selectedCategories));
+  
+    // Format subcategories
+    const formattedSubcategories: { [key: string]: string[] } = {};
+    for (const category in this.selectedSubcategories) {
+      formattedSubcategories[category] = this.selectedSubcategories[category];
+    }
+    console.log('Formatted Subcategories before upload:', formattedSubcategories);
+  
+    formData.append('subcategories', JSON.stringify(formattedSubcategories));
+  
+    formData.append('adminId', this.adminId.toString());
+  
+    this.uploadService.uploadVideo(formData).subscribe({
+      next: () => {
+        this.toastr.success('Video uploaded successfully!');
+        this.selectedFiles = [];
+        this.videoTitle = '';
+        this.videoDescription = '';
+        this.selectedCategories = [];
+        this.selectedSubcategories = {};
+        this.isLoading = false;
+      },
+      error: () => {
+        this.toastr.error('Video upload failed.');
+        this.isLoading = false;
+      }
+    });
+  }
+  
 }

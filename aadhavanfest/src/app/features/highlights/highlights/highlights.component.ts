@@ -1,3 +1,88 @@
+// import { Component, OnInit } from '@angular/core';
+// import { ActivatedRoute } from '@angular/router';
+// import { ApiService } from '../../../core/api.service';
+// import { ToastrService } from 'ngx-toastr';
+
+// @Component({
+//   selector: 'app-highlights',
+//   standalone: false,
+//   templateUrl: './highlights.component.html',
+//   styleUrls: ['./highlights.component.css'] // corrected here
+// })
+// export class HighlightsComponent implements OnInit {
+
+//   selectedTab: 'inside' | 'outside' = 'inside';
+//   videosInside: any[] = [];
+//   videosOutside: any[] = [];
+
+//   constructor(
+//     private route: ActivatedRoute,
+//     private apiService: ApiService,
+//     private toastr: ToastrService
+//   ) {}
+
+//   ngOnInit(): void {
+//     this.route.paramMap.subscribe(params => {
+//       const tab = params.get('tab') as 'inside' | 'outside';
+//       if (tab === 'inside' || tab === 'outside') {
+//         this.selectedTab = tab;
+//       }
+//       this.fetchVideos(this.selectedTab);
+//     });
+//   }
+
+//   selectTab(tab: 'inside' | 'outside') {
+//     this.selectedTab = tab;
+//     this.fetchVideos(tab);
+//   }
+
+//   fetchVideos(tab: 'inside' | 'outside') {
+//     const subcategory = tab === 'inside' ? 'inside_college' : 'outside_college';
+
+//     this.apiService.getHighlights(subcategory).subscribe(
+//       (videos: any[]) => {
+//         console.log('Fetched videos:', videos);
+//         if (tab === 'inside') {
+//           this.videosInside = videos;
+//         } else {
+//           this.videosOutside = videos;
+//         }
+//       },
+//       (error) => {
+//         console.error('Error fetching videos:', error);
+//         this.toastr.error('Failed to fetch videos. Please try again later.');
+//       }
+//     );
+//   }
+
+//   playAndUnmute(video: HTMLVideoElement) {
+//     video.muted = false;
+//     video.play().catch(err => {
+//       console.error('Play error:', err);
+//     });
+//   }
+
+//   pauseAndMute(video: HTMLVideoElement) {
+//     video.pause();
+//     video.muted = true;
+//   }
+
+//   shareVideo(video: any) {
+//     const url = `${window.location.origin}/videos/${video.id}`;
+//     if (navigator.share) {
+//       navigator.share({
+//         title: video.title,
+//         text: video.description,
+//         url: url,
+//       }).catch(err => console.error('Sharing failed:', err));
+//     } else {
+//       navigator.clipboard.writeText(url).then(() => {
+//         alert('Video link copied!');
+//       }).catch(() => alert('Copy failed'));
+//     }
+//   }
+// }
+
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../core/api.service';
@@ -7,71 +92,56 @@ import { ToastrService } from 'ngx-toastr';
   selector: 'app-highlights',
   standalone: false,
   templateUrl: './highlights.component.html',
-  styleUrl: './highlights.component.css'
+  styleUrls: ['./highlights.component.css']
 })
 export class HighlightsComponent implements OnInit {
 
-  selectedTab: 'inside' | 'outside' = 'inside'; // default value
-  videosInside: any[] = []; // Store videos for inside tab
-  videosOutside: any[] = []; // Store videos for outside tab
+  selectedTab: 'inside' | 'outside' = 'inside';
+  selectedCategory: string = 'Highlights'; // Default category (can be dynamic if needed)
+  selectedSubcategory: string = 'Inside College'; // Default subcategory
+  videosInside: any[] = [];
+  videosOutside: any[] = [];
 
-  isDesktop(): boolean {
-    return window.innerWidth >= 1024;  // Adjust this based on your definition of "desktop"
-  }
-  toggleMute(videoElement: HTMLVideoElement) {
-    videoElement.muted = !videoElement.muted;
-  }
-  playAndUnmute(videoElement: HTMLVideoElement) {
-    videoElement.muted = false;
-    videoElement.play();
-  }
-  
-  pauseAndMute(videoElement: HTMLVideoElement) {
-    videoElement.pause();
-    videoElement.muted = true;
-  }
-  
-  
+  categories: string[] = ['Highlights', 'Achievements']; // Available categories
+  subcategoriesMap: { [key: string]: string[] } = {
+    'Highlights': ['Inside College'],
+    'Achievements': ['District']
+  };
 
-  constructor(private route: ActivatedRoute, private apiService: ApiService, private toastr: ToastrService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private apiService: ApiService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
-    // Fetch tab from URL params to set selectedTab
     this.route.paramMap.subscribe(params => {
       const tab = params.get('tab') as 'inside' | 'outside';
       if (tab === 'inside' || tab === 'outside') {
         this.selectedTab = tab;
       }
-      this.fetchVideos(this.selectedTab); // Fetch videos when component is initialized
+      this.fetchVideos(this.selectedTab, this.selectedCategory, this.selectedSubcategory);
     });
   }
 
   selectTab(tab: 'inside' | 'outside') {
     this.selectedTab = tab;
-    this.fetchVideos(tab); // Fetch videos when the tab is selected
+    this.fetchVideos(tab, this.selectedCategory, this.selectedSubcategory);
   }
 
-  // fetchVideos(tab: 'inside' | 'outside') {
-  //   const subcategory = tab === 'inside' ? 'inside_college' : 'outside_college';
-    
-  //   this.apiService.getHighlights(subcategory).subscribe(
-  //     (videos: any[]) => {
-  //       if (tab === 'inside') {
-  //         this.videosInside = videos;
-  //       } else {
-  //         this.videosOutside = videos;
-  //       }
-  //     },
-  //     (error) => {
-  //       console.error('Error fetching videos:', error);
-  //     }
-  //   );
-  // }
+  selectCategory(category: string) {
+    this.selectedCategory = category;
+    this.selectedSubcategory = this.subcategoriesMap[category][0]; // Default subcategory for the selected category
+    this.fetchVideos(this.selectedTab, this.selectedCategory, this.selectedSubcategory);
+  }
 
-  fetchVideos(tab: 'inside' | 'outside') {
-    const subcategory = tab === 'inside' ? 'inside_college' : 'outside_college';
-    
-    this.apiService.getHighlights(subcategory).subscribe(
+  selectSubcategory(subcategory: string) {
+    this.selectedSubcategory = subcategory;
+    this.fetchVideos(this.selectedTab, this.selectedCategory, this.selectedSubcategory);
+  }
+
+  fetchVideos(tab: 'inside' | 'outside', category: string, subcategory: string) {
+    this.apiService.getHighlights(category, subcategory).subscribe(
       (videos: any[]) => {
         console.log('Fetched videos:', videos);
         if (tab === 'inside') {
@@ -82,13 +152,23 @@ export class HighlightsComponent implements OnInit {
       },
       (error) => {
         console.error('Error fetching videos:', error);
-        // Optionally, display a user-friendly error message in the UI
         this.toastr.error('Failed to fetch videos. Please try again later.');
       }
     );
   }
 
-  
+  playAndUnmute(video: HTMLVideoElement) {
+    video.muted = false;
+    video.play().catch(err => {
+      console.error('Play error:', err);
+    });
+  }
+
+  pauseAndMute(video: HTMLVideoElement) {
+    video.pause();
+    video.muted = true;
+  }
+
   shareVideo(video: any) {
     const url = `${window.location.origin}/videos/${video.id}`;
     if (navigator.share) {

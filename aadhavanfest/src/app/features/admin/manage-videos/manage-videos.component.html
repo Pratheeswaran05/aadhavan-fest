@@ -110,20 +110,46 @@
     </div>
 
     <!-- Subcategories Dropdown -->
-    <div *ngIf="selectedCategories.length > 0" class="mt-6 space-y-4">
+    <!-- <div *ngIf="selectedCategories.length > 0" class="mt-6 space-y-4">
       <div *ngFor="let category of selectedCategories">
         <label class="block text-gray-700 font-semibold mb-2">{{ category }} Subcategories</label>
         <select
           [(ngModel)]="selectedSubcategories[category]"
           class="block w-64 p-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
         >
-          <option value="">Select</option> <!-- Default blank option -->
+          <option value="">Select</option> 
           <option *ngFor="let sub of getSubcategories(category)" [value]="sub">
             {{ sub }}
           </option>
         </select>
       </div>
+    </div> -->
+    <!-- <div *ngIf="selectedCategories.includes(category)">
+      <div *ngFor="let subcategory of getSubcategories(category)">
+        <input
+          type="checkbox"
+          [value]="subcategory"
+          (change)="onSubcategoryChange($event, category)"
+        /> {{ subcategory }}
+      </div>
+    </div> -->
+
+    <!-- Template -->
+<div *ngFor="let category of selectedCategories">
+  <div *ngIf="selectedCategories.includes(category)">
+    <div *ngFor="let subcategory of getSubcategories(category)">
+      <!-- Subcategory input to select/unselect -->
+      <input
+        type="checkbox"
+        [value]="subcategory"
+        (change)="onSubcategoryChange($event, category)"
+      />
+      {{ subcategory }}
     </div>
+  </div>
+</div>
+
+  <!-- </div> -->
 
     <!-- Submit Button -->
     <button
