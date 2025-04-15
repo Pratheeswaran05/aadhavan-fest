@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ApiService } from '../../../core/api.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-highlights',
@@ -7,34 +9,86 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './highlights.component.html',
   styleUrl: './highlights.component.css'
 })
-export class HighlightsComponent implements OnInit{
+export class HighlightsComponent implements OnInit {
 
-  // selectedTab: string = 'inside';
+  selectedTab: 'inside' | 'outside' = 'inside'; // default value
+  videosInside: any[] = []; // Store videos for inside tab
+  videosOutside: any[] = []; // Store videos for outside tab
 
-  // selectTab(tab: string) {
-  //   this.selectedTab = tab;
-  // }
+  isDesktop(): boolean {
+    return window.innerWidth >= 1024;  // Adjust this based on your definition of "desktop"
+  }
+  toggleMute(videoElement: HTMLVideoElement) {
+    videoElement.muted = !videoElement.muted;
+  }
+  playAndUnmute(videoElement: HTMLVideoElement) {
+    videoElement.muted = false;
+    videoElement.play();
+  }
+  
+  pauseAndMute(videoElement: HTMLVideoElement) {
+    videoElement.pause();
+    videoElement.muted = true;
+  }
+  
+  
 
-
-    selectedTab: 'inside' | 'outside' = 'inside'; // default value
-
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private apiService: ApiService, private toastr: ToastrService) {}
 
   ngOnInit(): void {
+    // Fetch tab from URL params to set selectedTab
     this.route.paramMap.subscribe(params => {
       const tab = params.get('tab') as 'inside' | 'outside';
       if (tab === 'inside' || tab === 'outside') {
         this.selectedTab = tab;
       }
+      this.fetchVideos(this.selectedTab); // Fetch videos when component is initialized
     });
   }
 
   selectTab(tab: 'inside' | 'outside') {
     this.selectedTab = tab;
+    this.fetchVideos(tab); // Fetch videos when the tab is selected
   }
+
+  // fetchVideos(tab: 'inside' | 'outside') {
+  //   const subcategory = tab === 'inside' ? 'inside_college' : 'outside_college';
+    
+  //   this.apiService.getHighlights(subcategory).subscribe(
+  //     (videos: any[]) => {
+  //       if (tab === 'inside') {
+  //         this.videosInside = videos;
+  //       } else {
+  //         this.videosOutside = videos;
+  //       }
+  //     },
+  //     (error) => {
+  //       console.error('Error fetching videos:', error);
+  //     }
+  //   );
+  // }
+
+  fetchVideos(tab: 'inside' | 'outside') {
+    const subcategory = tab === 'inside' ? 'inside_college' : 'outside_college';
+    
+    this.apiService.getHighlights(subcategory).subscribe(
+      (videos: any[]) => {
+        console.log('Fetched videos:', videos);
+        if (tab === 'inside') {
+          this.videosInside = videos;
+        } else {
+          this.videosOutside = videos;
+        }
+      },
+      (error) => {
+        console.error('Error fetching videos:', error);
+        // Optionally, display a user-friendly error message in the UI
+        this.toastr.error('Failed to fetch videos. Please try again later.');
+      }
+    );
+  }
+
   
-
-
   shareVideo(video: any) {
     const url = `${window.location.origin}/videos/${video.id}`;
     if (navigator.share) {
@@ -49,42 +103,4 @@ export class HighlightsComponent implements OnInit{
       }).catch(() => alert('Copy failed'));
     }
   }
-
-  videosInside = [
-    {
-      id: 'fest-2025',
-      title: 'Cultural Fest 2025',
-      description: 'Highlights of the annual fest.',
-      src: 'assets/videos/fest.mp4',
-      thumbnail: 'assets/thumbnails/fest.jpg',
-      duration: '1:45',
-    },
-    {
-      id: 'clean-drive',
-      title: 'Cleanliness Drive',
-      description: 'Students uniting for a clean campus.',
-      src: 'assets/videos/clean_drive.mp4',
-      thumbnail: 'assets/thumbnails/clean_drive.jpg',
-      duration: '0:59',
-    },
-  ];
-
-  videosOutside = [
-    {
-      id: 'tech-fest',
-      title: 'Techno-Cultural Fest',
-      description: 'Inter-college tech and art showcase.',
-      src: 'assets/videos/tech_fest.mp4',
-      thumbnail: 'assets/thumbnails/tech_fest.jpg',
-      duration: '2:10',
-    },
-    {
-      id: 'ngo-service',
-      title: 'NGO Service Program',
-      description: 'Community outreach activities.',
-      src: 'assets/videos/ngo.mp4',
-      thumbnail: 'assets/thumbnails/ngo.jpg',
-      duration: '1:25',
-    },
-  ];
 }

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -30,5 +31,9 @@ export class AppComponent {
   checkAuthPage() {
     const authRoutes = ['/admin/login', '/admin/signup'];
     this.isAuthPage = authRoutes.includes(this.router.url);
+  }
+  
+  getVideoUrl(video: any): string {
+    return `${environment.apiBaseUrl}/${video.video_url}`;
   }
 }

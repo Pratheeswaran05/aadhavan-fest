@@ -15,33 +15,36 @@
     </button>
   </div>
 
-  <!-- Shared Video Layout Component -->
+  <!-- Video Layout -->
   <ng-container *ngIf="selectedTab === 'inside' || selectedTab === 'outside'">
     <div class="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6 overflow-x-hidden">
       <div 
         *ngFor="let video of selectedTab === 'inside' ? videosInside : videosOutside" 
-        class="relative rounded-2xl overflow-hidden shadow-md bg-white group sm:h-64 h-[90vh] w-full">
+        class="relative rounded-2xl overflow-hidden shadow-md bg-white group sm:h-64 h-[90vh] w-full"
+      >
 
         <!-- Thumbnail -->
         <img
-          [src]="video.thumbnail"
+          [src]="video.thumbnail_url"
           alt="Video thumbnail"
           class="absolute w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 sm:block hidden"
         />
 
-        <!-- Desktop video (hover-play) -->
+        <!-- Desktop video (hover to play/unmute) -->
         <video
-          class="absolute w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300 sm:block hidden pointer-events-none"
-          autoplay
-          muted
+          #videoRef
+          class="absolute w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300 sm:block hidden"
           loop
+          muted
           playsinline
           preload="metadata"
+          (mouseenter)="playAndUnmute(videoRef)"
+          (mouseleave)="pauseAndMute(videoRef)"
         >
-          <source [src]="video.src" type="video/mp4" />
+          <source [src]="'http://localhost:5000/' + video.video_url" type="video/mp4" />
         </video>
 
-        <!-- Mobile video (scroll-reel style) -->
+        <!-- Mobile video (auto play muted) -->
         <video
           class="block sm:hidden w-full h-full object-cover pointer-events-none"
           autoplay
@@ -50,7 +53,7 @@
           playsinline
           preload="metadata"
         >
-          <source [src]="video.src" type="video/mp4" />
+          <source [src]="'http://localhost:5000/' + video.video_url" type="video/mp4" />
         </video>
 
         <!-- Top Icons -->
@@ -59,15 +62,6 @@
           <div class="bg-black/60 text-white text-xs px-2 py-1 rounded-md">
             {{ video.duration }}
           </div>
-
-          <!-- Share Icon -->
-          <button (click)="shareVideo(video)" class="text-white hover:text-gray-300" aria-label="Share">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
-              viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M15 8a3 3 0 10-3-3m0 0a3 3 0 00-3 3m6 0v7a3 3 0 11-6 0V8m0 0V5a3 3 0 013-3 3 3 0 013 3v3" />
-            </svg>
-          </button>
         </div>
 
         <!-- Bottom Text -->
