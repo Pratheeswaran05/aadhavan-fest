@@ -1,54 +1,83 @@
 <div class="p-6">
-    <h1 class="text-3xl font-bold mb-6 text-center">Achievements</h1>
-  
-    <!-- Tabs -->
-    <div class="flex justify-center mb-6">
-      <button 
-        (click)="selectAchievementTab('district')" 
-        [ngClass]="achievementTab === 'district' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'"
-        class="px-4 py-2 mx-2 rounded-lg">
-        District
-      </button>
-      <button 
-        (click)="selectAchievementTab('state')" 
-        [ngClass]="achievementTab === 'state' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'"
-        class="px-4 py-2 mx-2 rounded-lg">
-        State
-      </button>
-      <button 
-        (click)="selectAchievementTab('national')" 
-        [ngClass]="achievementTab === 'national' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'"
-        class="px-4 py-2 mx-2 rounded-lg">
-        National
-      </button>
-    </div>
-  
-    <!-- Tab Contents -->
-    <div *ngIf="achievementTab === 'district'" class="tab-content">
-      <h2 class="text-2xl font-semibold mb-4">District Level Achievements</h2>
-      <ul class="list-disc list-inside space-y-2">
-        <li>District Debate Championship - 1st Prize</li>
-        <li>District Science Fair - Best Project Award</li>
-        <li>District Art Contest - Runner Up</li>
-      </ul>
-    </div>
-  
-    <div *ngIf="achievementTab === 'state'" class="tab-content">
-      <h2 class="text-2xl font-semibold mb-4">State Level Achievements</h2>
-      <ul class="list-disc list-inside space-y-2">
-        <li>State Sports Meet - Gold Medal in Basketball</li>
-        <li>State Technical Quiz - 2nd Position</li>
-        <li>State Cultural Fest - Best Drama Performance</li>
-      </ul>
-    </div>
-  
-    <div *ngIf="achievementTab === 'national'" class="tab-content">
-      <h2 class="text-2xl font-semibold mb-4">National Level Achievements</h2>
-      <ul class="list-disc list-inside space-y-2">
-        <li>National Innovation Challenge - Winner</li>
-        <li>National Youth Parliament - Best Speaker Award</li>
-        <li>National Arts Fest - Special Recognition</li>
-      </ul>
+  <h1 class="text-3xl font-bold mb-6 text-center">Achievements</h1>
+
+  <!-- Tabs -->
+  <div class="flex justify-center mb-6">
+    <button 
+      (click)="selectAchievementTab('district')" 
+      [ngClass]="achievementTab === 'district' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'"
+      class="px-4 py-2 mx-2 rounded-lg">
+      District
+    </button>
+    <button 
+      (click)="selectAchievementTab('state')" 
+      [ngClass]="achievementTab === 'state' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'"
+      class="px-4 py-2 mx-2 rounded-lg">
+      State
+    </button>
+    <button 
+      (click)="selectAchievementTab('national')" 
+      [ngClass]="achievementTab === 'national' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'"
+      class="px-4 py-2 mx-2 rounded-lg">
+      National
+    </button>
+  </div>
+
+  <!-- Tab Content Cards -->
+  <div class="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6 overflow-x-hidden">
+    <div 
+      *ngFor="let video of achievementVideos[achievementTab]" 
+      class="relative rounded-2xl overflow-hidden shadow-md bg-white group sm:h-64 h-[90vh] w-full"
+    >
+      <!-- Thumbnail -->
+      <img
+        [src]="video.thumbnail"
+        alt="Video thumbnail"
+        class="absolute w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 sm:block hidden"
+      />
+
+      <!-- Desktop video -->
+      <video
+        class="absolute w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300 sm:block hidden pointer-events-none"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+      >
+        <source [src]="video.src" type="video/mp4" />
+      </video>
+
+      <!-- Mobile video -->
+      <video
+        class="block sm:hidden w-full h-full object-cover pointer-events-none"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+      >
+        <source [src]="video.src" type="video/mp4" />
+      </video>
+
+      <!-- Top overlay -->
+      <div class="absolute top-0 left-0 right-0 z-10 flex justify-between items-start p-3">
+        <div class="bg-black/60 text-white text-xs px-2 py-1 rounded-md">
+          {{ video.duration }}
+        </div>
+        <button (click)="shareVideo(video)" class="text-white hover:text-gray-300" aria-label="Share">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15 8a3 3 0 10-3-3m0 0a3 3 0 00-3 3m6 0v7a3 3 0 11-6 0V8m0 0V5a3 3 0 013-3 3 3 0 013 3v3" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Bottom content -->
+      <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 z-10">
+        <h3 class="text-white font-semibold text-lg">{{ video.title }}</h3>
+        <p class="text-gray-300 text-sm mt-1">{{ video.description }}</p>
+      </div>
     </div>
   </div>
-  
+</div>

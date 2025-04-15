@@ -22,8 +22,13 @@ export class HeaderComponent {
     { id: 'college', name: 'College', route: '/college', subItems: ['About', 'Facilities', 'Clubs'] }
   ];
 
+  // getFormattedRoute(menuRoute: string, subItem: string): string {
+  //   return `${menuRoute}/${subItem.toLowerCase().replace(/ /g, '-')}`;
+  // }
+  
   getFormattedRoute(menuRoute: string, subItem: string): string {
-    return `${menuRoute}/${subItem.toLowerCase().replace(/ /g, '-')}`;
+    const tab = subItem.toLowerCase().replace(/ /g, '');
+    return `${menuRoute}/${tab}`; // returns 'highlights/outside'
   }
   
 
