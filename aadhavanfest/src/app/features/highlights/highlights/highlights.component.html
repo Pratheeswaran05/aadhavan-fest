@@ -15,28 +15,6 @@
     </button>
   </div>
 
-  <!-- Categories -->
-  <div class="flex justify-center mb-6">
-    <button 
-      *ngFor="let category of categories" 
-      (click)="selectCategory(category)"
-      [ngClass]="selectedCategory === category ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'"
-      class="px-4 py-2 mx-2 rounded-lg">
-      {{ category }}
-    </button>
-  </div>
-
-  <!-- Subcategories -->
-  <div class="flex justify-center mb-6">
-    <button 
-      *ngFor="let subcategory of subcategoriesMap[selectedCategory]" 
-      (click)="selectSubcategory(subcategory)"
-      [ngClass]="selectedSubcategory === subcategory ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'"
-      class="px-4 py-2 mx-2 rounded-lg">
-      {{ subcategory }}
-    </button>
-  </div>
-
   <!-- Video Layout -->
   <ng-container *ngIf="selectedTab === 'inside' || selectedTab === 'outside'">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-2 sm:p-6">

@@ -26,6 +26,14 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
+  // getHighlights(category: string, subcategory: string) {
+  //   // return this.http.get<any[]>(`${this.apiUrl}/highlights?category=${category}&subcategory=${subcategory}`);
+  //   return this.http.get<Video[]>(`${this.baseUrl}/videos/highlights?category=${category}&subcategory=${subcategory}`).pipe(
+  //     catchError(this.handleError)
+  //   );
+    
+  // }
+  
   // Fetch highlight videos based on subcategory
   getHighlights(subcategory: string): Observable<Video[]> {
     return this.http.get<Video[]>(`${this.baseUrl}/videos/highlights/${subcategory}`).pipe(
