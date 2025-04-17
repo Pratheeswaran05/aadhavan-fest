@@ -25,6 +25,7 @@ import { PreloaderComponent } from './preloader/preloader.component';
   exports: [
     HeaderComponent,
     PreloaderComponent,
+    FooterComponent
   ]
 })
 export class SharedModule { }

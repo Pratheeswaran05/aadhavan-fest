@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   { path: 'admin', loadChildren: () => import('./features/admin/admin.module').then(m => m.AdminModule) },
 
-  { path: '', redirectTo: '/admin/login', pathMatch: 'full' }, // Redirect to login
+  { path: '', redirectTo: '/home', pathMatch: 'full' }, // Redirect to login
    { path: 'achievements', 
     loadChildren: () => import('./features/achievements/achievements.module').then(m =>
     m.AchievementsModule)
@@ -25,7 +25,11 @@ const routes: Routes = [
     loadChildren: () => import('./features/students/students.module').then(m => 
     m.StudentsModule)
    },
-
+ 
+   { path: 'home', 
+    loadChildren: () => import('./home/home.module').then(m => 
+    m.HomeModule)
+   },
 
 
    { path: 'shared', 
