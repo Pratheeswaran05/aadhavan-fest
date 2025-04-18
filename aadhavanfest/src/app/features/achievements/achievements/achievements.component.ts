@@ -10,13 +10,11 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./achievements.component.css']
 })
 export class AchievementsComponent implements OnInit {
+
   selectedTab: 'district' | 'state' | 'national' = 'district';
-
-  // Define separate arrays for videos
-  districtVideos: any[] = [];
-  stateVideos: any[] = [];
-  nationalVideos: any[] = [];
-
+  videosDistrict: any[] = [];
+  videosState: any[] = [];
+  videosNational: any[] = [];
 
   constructor(
     private apiService: ApiService,
@@ -24,64 +22,42 @@ export class AchievementsComponent implements OnInit {
     private route: ActivatedRoute,
   ) {}
 
-
   ngOnInit(): void {
-    // Subscribe to route parameters to capture the selected tab
-    this.route.params.subscribe(params => {
-      const tab = params['tab'];
-      if (tab) {
+    this.route.paramMap.subscribe(params => {
+      const tab = params.get('tab') as 'district' | 'state' | 'national';
+      if (tab === 'district' || tab === 'state' || tab === 'national') {
         this.selectedTab = tab;
       }
-      this.fetchVideos(this.selectedTab); // Fetch videos on init based on the selected tab
+      this.fetchVideos(this.selectedTab);
     });
   }
 
-  // Select the tab (district, state, or national)
   selectTab(tab: 'district' | 'state' | 'national') {
     this.selectedTab = tab;
-    this.fetchVideos(tab); // Fetch videos for the selected tab
+    this.fetchVideos(tab);
   }
 
-  // Fetch videos based on the selected tab
-  // fetchVideos(tab: 'district' | 'state' | 'national') {
-  //   this.apiService.getAchievements('Achievements', tab).subscribe(
-  //     (videos: any[]) => {
-  //       console.log('Fetched videos:', videos);
-  //       if (tab === 'district') {
-  //         this.districtVideos = videos;
-  //       } else if (tab === 'state') {
-  //         this.stateVideos = videos;
-  //       } else if (tab === 'national') {
-  //         this.nationalVideos = videos;
-  //       }
-  //     },
-  //     (error) => {
-  //       console.error('Error fetching videos:', error);
-  //       this.toastr.error('Failed to fetch videos. Please try again later.');
-  //     }
-  //   );
-  // }
   fetchVideos(tab: 'district' | 'state' | 'national') {
-    this.apiService.getAchievements(tab).subscribe(
+    const subcategory = tab.charAt(0).toUpperCase() + tab.slice(1); // Capitalize
+
+    this.apiService.getAchievements(subcategory).subscribe(
       (videos: any[]) => {
         console.log('Fetched videos:', videos);
         if (tab === 'district') {
-          this.districtVideos = videos;
+          this.videosDistrict = videos;
         } else if (tab === 'state') {
-          this.stateVideos = videos;
+          this.videosState = videos;
         } else if (tab === 'national') {
-          this.nationalVideos = videos;
+          this.videosNational = videos;
         }
       },
-      (error) => {
+      (error: any) => {
         console.error('Error fetching videos:', error);
         this.toastr.error('Failed to fetch videos. Please try again later.');
       }
     );
   }
-  
 
-  // Play and unmute video
   playAndUnmute(video: HTMLVideoElement) {
     video.muted = false;
     video.play().catch(err => {
@@ -89,13 +65,11 @@ export class AchievementsComponent implements OnInit {
     });
   }
 
-  // Pause and mute video
   pauseAndMute(video: HTMLVideoElement) {
     video.pause();
     video.muted = true;
   }
 
-  // Share video functionality
   shareVideo(video: any) {
     const url = `${window.location.origin}/videos/${video.id}`;
     if (navigator.share) {
