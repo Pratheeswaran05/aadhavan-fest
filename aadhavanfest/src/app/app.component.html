@@ -1,14 +1,25 @@
-<!-- <app-preloader *ngIf="isLoading"></app-preloader>
+<!-- Show Preloader when isLoading is true -->
+<!-- <app-preloader *ngIf="isLoading"></app-preloader> -->
 
-<app-header *ngIf="!isAuthPage"></app-header>
+<!-- Show Intro Video before app content loads -->
+<!-- <app-intro *ngIf="isLoading" (videoFinished)="onIntroVideoFinished()"></app-intro> -->
 
-<main>
+
+<!-- Show the header only if it's not an Auth page -->
+<!-- <app-header *ngIf="!isAuthPage"></app-header> -->
+
+<!-- Main content with blurred background when loading -->
+<!-- <main [class.loading]="isLoading">
   <router-outlet></router-outlet>
 </main> -->
 
+<!-- <app-footer *ngIf="!isAuthPage"></app-footer> -->
 
 <!-- Show Preloader when isLoading is true -->
 <app-preloader *ngIf="isLoading"></app-preloader>
+
+<!-- Show Intro Video before the main content loads -->
+<!-- <app-intro *ngIf="isLoading" (videoFinished)="onIntroVideoFinished()"></app-intro> -->
 
 <!-- Show the header only if it's not an Auth page -->
 <app-header *ngIf="!isAuthPage"></app-header>
@@ -18,4 +29,4 @@
   <router-outlet></router-outlet>
 </main>
 
-<app-footer></app-footer>
+<app-footer *ngIf="!isAuthPage"></app-footer>

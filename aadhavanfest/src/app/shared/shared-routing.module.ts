@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { IntroComponent } from './intro/intro.component';
 
 const routes: Routes = [
   {
@@ -16,6 +17,10 @@ const routes: Routes = [
   {
     path: 'sidebar',
     component: SidebarComponent
+  },
+  {
+    path: 'intro',
+    component: IntroComponent
   }
 ];
 @NgModule({

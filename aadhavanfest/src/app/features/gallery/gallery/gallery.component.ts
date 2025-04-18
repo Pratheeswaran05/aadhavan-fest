@@ -1,73 +1,56 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../../../core/api.service';
 
 @Component({
   selector: 'app-gallery',
   standalone: false,
   templateUrl: './gallery.component.html',
-  styleUrl: './gallery.component.css'
+  styleUrls: ['./gallery.component.css']
 })
-export class GalleryComponent {
-  // categories = ['all', 'events', 'sports', 'cultural'];
-  // selectedCategory = 'all';
-
-  // images = [
-  //   { src: 'https://source.unsplash.com/random/300x400?event', category: 'events' },
-  //   { src: 'https://source.unsplash.com/random/400x500?sports', category: 'sports' },
-  //   { src: 'https://source.unsplash.com/random/500x600?culture', category: 'cultural' },
-  //   { src: 'https://source.unsplash.com/random/600x400?festival', category: 'events' },
-  // ];
-
-  // filteredImages = [...this.images];
-
-  // lightboxOpen = false;
-  // lightboxImage = '';
-
-  // filterGallery(category: string) {
-  //   this.selectedCategory = category;
-  //   if (category === 'all') {
-  //     this.filteredImages = [...this.images];
-  //   } else {
-  //     this.filteredImages = this.images.filter(img => img.category === category);
-  //   }
-  // }
-
-  // loadMoreImages() {
-  //   for (let i = 0; i < 4; i++) {
-  //     const randomCategory = ['events', 'sports', 'cultural'][Math.floor(Math.random() * 3)];
-  //     const newImage = {
-  //       src: `https://source.unsplash.com/random?sig=${Math.random()}`,
-  //       category: randomCategory
-  //     };
-  //     this.images.push(newImage);
-  //   }
-  //   this.filterGallery(this.selectedCategory); // To update filtered view
-  // }
-
-  // openLightbox(src: string) {
-  //   this.lightboxImage = src;
-  //   this.lightboxOpen = true;
-  // }
-
-  // closeLightbox() {
-  //   this.lightboxOpen = false;
-  // }
-
+export class GalleryComponent implements OnInit {
   selectedCategory: string = 'all';
-  lightboxOpen: boolean = false;
-  lightboxImage: string = '';
-  lightboxType: string = ''; // 'image' or 'video'
-  lightboxVideo: string = '';
-  
-  // categories: string[] = ['all', 'nature', 'events', 'sports', 'art'];
-  items: any[] = [
-    { src: 'assets/images/image1.jpg', category: 'nature', type: 'image' },
-    { src: 'assets/videos/video1.mp4', category: 'events', type: 'video' },
-    { src: 'assets/images/image2.jpg', category: 'sports', type: 'image' },
-    // Add more items here...
-  ];
-  filteredItems: any[] = [...this.items];
+  lightboxOpen = false;
+  lightboxImage = '';
+  lightboxVideo = '';
+  lightboxType = '';
+  items: any[] = [];
+  filteredItems: any[] = [];
 
-  // Filter gallery items by category
+  constructor(private apiService: ApiService) {}
+
+  ngOnInit(): void {
+    this.loadGalleryItems();
+  }
+
+  loadGalleryItems(): void {
+    // Reset items array to avoid duplicates
+    this.items = [];
+
+    // Fetch video items
+    this.apiService.getAllGalleryVideos().subscribe(videos => {
+      const videoItems = videos.map(v => ({
+        src: `http://localhost:5000/${v.video_url}`,
+        type: 'video',
+        category: 'video'
+      }));
+      this.items = [...this.items, ...videoItems];
+    });
+
+    // Fetch photo items
+    this.apiService.getAllGalleryPhotos().subscribe(photos => {
+      const imageItems = photos.map(p => ({
+        src: `http://localhost:5000/${p.photo_url}`,
+        type: 'image',
+        category: p.categories && p.categories.length > 0 ? p.categories[0] : 'image', // check categories array length
+        title: p.title,
+        description: p.description,
+        thumbnail: p.thumbnail_url ? `http://localhost:5000/${p.thumbnail_url}` : null
+      }));
+      this.items = [...this.items, ...imageItems];
+      this.filteredItems = [...this.items]; // Ensure filteredItems is updated as well
+    });
+  }
+
   filterGallery(category: string) {
     this.selectedCategory = category;
     if (category === 'all') {
@@ -77,10 +60,8 @@ export class GalleryComponent {
     }
   }
 
-  // Open lightbox for image
   openLightbox(src: string) {
-    this.lightboxOpen = true;
-    const fileType = src.split('.').pop();
+    const fileType = src.split('.').pop()?.toLowerCase();
     if (fileType === 'mp4') {
       this.lightboxType = 'video';
       this.lightboxVideo = src;
@@ -88,16 +69,15 @@ export class GalleryComponent {
       this.lightboxType = 'image';
       this.lightboxImage = src;
     }
+    this.lightboxOpen = true;
   }
 
-  // Close lightbox
   closeLightbox() {
     this.lightboxOpen = false;
   }
 
-  // Load more items
   loadMoreItems() {
-    // You can add more logic to load more items dynamically
-    console.log('Loading more items...');
+    // Pagination logic could be added here for more items
+    console.log('Load more items clicked');
   }
 }

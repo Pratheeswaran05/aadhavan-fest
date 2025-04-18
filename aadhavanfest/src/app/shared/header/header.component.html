@@ -18,7 +18,10 @@
         </a>
         <ul class="absolute right-0 w-48 bg-white border text-[#0c1a39] shadow-lg rounded-lg hidden group-hover:flex flex-col">
           <li *ngFor="let subItem of menu.subItems">
-            <a [routerLink]="getFormattedRoute(menu.route, subItem)"  class="block px-4 py-2 hover:bg-gray-200 font-normal">{{ subItem }}</a>
+            <a [routerLink]="getFormattedRoute(menu.route, subItem)"  class="block px-4 py-2 hover:bg-gray-200 font-normal">
+              <!-- {{ subItem }} -->
+              {{ subItem.label }}
+            </a>
           </li>
         </ul>
       </li>
@@ -52,7 +55,10 @@
       </div>
       <ul *ngIf="expandedMenu === menu.id" class="pl-4 space-y-1">
         <li *ngFor="let subItem of menu.subItems">
-          <a [routerLink]="getFormattedRoute(menu.route, subItem)" class="block py-2 text-gray-500">{{ subItem }}</a>
+          <a [routerLink]="getFormattedRoute(menu.route, subItem)" class="block py-2 text-gray-500">
+            <!-- {{ subItem }} -->
+            {{ subItem.label }}
+          </a>
         </li>
       </ul>
     </li>

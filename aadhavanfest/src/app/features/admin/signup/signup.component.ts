@@ -17,6 +17,7 @@ export class SignupComponent {
   password: string = '';
   confirmPassword: string = '';
   showPassword: boolean = false;
+  isLoading: boolean = false; // Track loading state for preloader
 
   roleData: { [key: string]: { label: string; placeholder: string } } = {
     teaching: { label: 'Teacher ID', placeholder: 'Enter Teacher ID' },
@@ -44,6 +45,8 @@ export class SignupComponent {
       return;
     }
 
+    this.isLoading = true; // Show preloader
+
    
     const formData = {
       name: this.name,
@@ -53,18 +56,20 @@ export class SignupComponent {
       password: this.password
     };
   
-    console.log("Submitting Form Data:", formData); // Debugging
+    // console.log("Submitting Form Data:", formData); // Debugging
   
     this.authService.registerAdmin(formData).subscribe(
       response => {
         console.log("Signup Success:", response);
         this.toastr.success('Signup Successful');
         this.router.navigate(['/admin/login']);
+        this.isLoading = false; // Hide preloader
 
       },
       error => {
         console.error("Signup Error:", error);
         this.toastr.error('Signup Failed');
+        this.isLoading = false; // Hide preloader
       }
     );
   }

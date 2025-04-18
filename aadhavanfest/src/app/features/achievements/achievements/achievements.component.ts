@@ -1,79 +1,113 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../../../core/api.service';
+import { ToastrService } from 'ngx-toastr';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-achievements',
   standalone: false,
   templateUrl: './achievements.component.html',
-  styleUrl: './achievements.component.css'
+  styleUrls: ['./achievements.component.css']
 })
-export class AchievementsComponent {
-  // achievementTab: string = 'district';
+export class AchievementsComponent implements OnInit {
+  selectedTab: 'district' | 'state' | 'national' = 'district';
 
-  // selectAchievementTab(tab: string) {
-  //   this.achievementTab = tab;
-  // }
+  // Define separate arrays for videos
+  districtVideos: any[] = [];
+  stateVideos: any[] = [];
+  nationalVideos: any[] = [];
 
-  achievementTab: 'district' | 'state' | 'national' = 'district';
 
-  achievementVideos = {
-    district: [
-      {
-        title: 'District Debate Champions',
-        description: 'Winning speech moments from the final round.',
-        src: 'assets/videos/district1.mp4',
-        thumbnail: 'assets/thumbnails/district1.jpg',
-        duration: '02:30'
-      },
-      {
-        title: 'Science Fair Highlights',
-        description: 'Award-winning science fair project.',
-        src: 'assets/videos/district2.mp4',
-        thumbnail: 'assets/thumbnails/district2.jpg',
-        duration: '01:45'
-      },
-    ],
-    state: [
-      {
-        title: 'Basketball Victory',
-        description: 'State-level gold medal match highlights.',
-        src: 'assets/videos/state1.mp4',
-        thumbnail: 'assets/thumbnails/state1.jpg',
-        duration: '03:10'
-      },
-      {
-        title: 'State Drama Performance',
-        description: 'Best drama act of the year.',
-        src: 'assets/videos/state2.mp4',
-        thumbnail: 'assets/thumbnails/state2.jpg',
-        duration: '02:15'
-      },
-    ],
-    national: [
-      {
-        title: 'National Innovation Challenge',
-        description: 'Behind the scenes of our winning idea.',
-        src: 'assets/videos/national1.mp4',
-        thumbnail: 'assets/thumbnails/national1.jpg',
-        duration: '02:50'
-      },
-      {
-        title: 'Youth Parliament',
-        description: 'Best speaker award moment.',
-        src: 'assets/videos/national2.mp4',
-        thumbnail: 'assets/thumbnails/national2.jpg',
-        duration: '01:55'
-      },
-    ]
-  };
+  constructor(
+    private apiService: ApiService,
+    private toastr: ToastrService,
+    private route: ActivatedRoute,
+  ) {}
 
-  selectAchievementTab(tab: 'district' | 'state' | 'national') {
-    this.achievementTab = tab;
+
+  ngOnInit(): void {
+    // Subscribe to route parameters to capture the selected tab
+    this.route.params.subscribe(params => {
+      const tab = params['tab'];
+      if (tab) {
+        this.selectedTab = tab;
+      }
+      this.fetchVideos(this.selectedTab); // Fetch videos on init based on the selected tab
+    });
   }
 
-  shareVideo(video: any) {
-    const url = window.location.origin + '/' + video.src;
-    navigator.clipboard.writeText(url).then(() => {
-      alert('Video link copied to clipboard!');
+  // Select the tab (district, state, or national)
+  selectTab(tab: 'district' | 'state' | 'national') {
+    this.selectedTab = tab;
+    this.fetchVideos(tab); // Fetch videos for the selected tab
+  }
+
+  // Fetch videos based on the selected tab
+  // fetchVideos(tab: 'district' | 'state' | 'national') {
+  //   this.apiService.getAchievements('Achievements', tab).subscribe(
+  //     (videos: any[]) => {
+  //       console.log('Fetched videos:', videos);
+  //       if (tab === 'district') {
+  //         this.districtVideos = videos;
+  //       } else if (tab === 'state') {
+  //         this.stateVideos = videos;
+  //       } else if (tab === 'national') {
+  //         this.nationalVideos = videos;
+  //       }
+  //     },
+  //     (error) => {
+  //       console.error('Error fetching videos:', error);
+  //       this.toastr.error('Failed to fetch videos. Please try again later.');
+  //     }
+  //   );
+  // }
+  fetchVideos(tab: 'district' | 'state' | 'national') {
+    this.apiService.getAchievements(tab).subscribe(
+      (videos: any[]) => {
+        console.log('Fetched videos:', videos);
+        if (tab === 'district') {
+          this.districtVideos = videos;
+        } else if (tab === 'state') {
+          this.stateVideos = videos;
+        } else if (tab === 'national') {
+          this.nationalVideos = videos;
+        }
+      },
+      (error) => {
+        console.error('Error fetching videos:', error);
+        this.toastr.error('Failed to fetch videos. Please try again later.');
+      }
+    );
+  }
+  
+
+  // Play and unmute video
+  playAndUnmute(video: HTMLVideoElement) {
+    video.muted = false;
+    video.play().catch(err => {
+      console.error('Play error:', err);
     });
+  }
+
+  // Pause and mute video
+  pauseAndMute(video: HTMLVideoElement) {
+    video.pause();
+    video.muted = true;
+  }
+
+  // Share video functionality
+  shareVideo(video: any) {
+    const url = `${window.location.origin}/videos/${video.id}`;
+    if (navigator.share) {
+      navigator.share({
+        title: video.title,
+        text: video.description,
+        url: url,
+      }).catch(err => console.error('Sharing failed:', err));
+    } else {
+      navigator.clipboard.writeText(url).then(() => {
+        alert('Video link copied!');
+      }).catch(() => alert('Copy failed'));
+    }
   }
 }

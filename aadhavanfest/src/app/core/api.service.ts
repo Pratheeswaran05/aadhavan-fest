@@ -26,37 +26,56 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  // getHighlights(category: string, subcategory: string) {
-  //   // return this.http.get<any[]>(`${this.apiUrl}/highlights?category=${category}&subcategory=${subcategory}`);
-  //   return this.http.get<Video[]>(`${this.baseUrl}/videos/highlights?category=${category}&subcategory=${subcategory}`).pipe(
+  getHighlights(category: string, subcategory: string) {
+    // return this.http.get<any[]>(`${this.apiUrl}/highlights?category=${category}&subcategory=${subcategory}`);
+    return this.http.get<Video[]>(`${this.baseUrl}/videos/highlights?category=${category}&subcategory=${subcategory}`).pipe(
+      catchError(this.handleError)
+    );
+   }
+
+
+  getAchievements(subcategory: string) {
+    return this.http.get<Video[]>(`${this.baseUrl}/videos/achievements/${subcategory}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+  
+  
+  getAllGalleryVideos(): Observable<Video[]> {
+    return this.http.get<Video[]>(`${this.baseUrl}/videos/all`).pipe(
+      catchError(this.handleError)
+    );
+  }
+  
+  // getAllGalleryPhotos(): Observable<{ photo_id: number, image_url: string }[]> {
+  //   return this.http.get<{ photo_id: number, image_url: string }[]>(`${this.baseUrl}/photos/all`).pipe(
   //     catchError(this.handleError)
   //   );
-    
   // }
+  // getAllGalleryPhotos(): Observable<any[]> {
+  //   return this.http.get<any[]>(`${this.baseUrl}/photos/all`).pipe(
+  //     catchError(this.handleError)
+  //   );
+  // }
+
+  getAllGalleryPhotos(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/photos/`).pipe(  // Using `/photos/` route now
+      catchError(this.handleError)
+    );
+  }
   
-  // Fetch highlight videos based on subcategory
-  getHighlights(subcategory: string): Observable<Video[]> {
-    return this.http.get<Video[]>(`${this.baseUrl}/videos/highlights/${subcategory}`).pipe(
-      catchError(this.handleError) // Add error handling
-    );
-  }
+  
 
-  // Optionally, fetch all videos or other categories later
-  getAllVideos(): Observable<Video[]> {
-    return this.http.get<Video[]>(`${this.baseUrl}/videos`).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  getVideosByCategory(category: string): Observable<Video[]> {
-    return this.http.get<Video[]>(`${this.baseUrl}/videos/category/${category}`).pipe(
-      catchError(this.handleError)
-    );
-  }
+// Fetch videos by subcategory with error handling
+getVideosBySubcategory(subcategory: string): Observable<Video[]> {
+  return this.http.get<Video[]>(`${this.baseUrl}/videos/highlights/${subcategory}`).pipe(
+    catchError(this.handleError) // Add error handling
+  );
+}
 
   // Generic error handler
-  private handleError(error: any) {
-    console.error('API Error:', error);
-    return throwError(() => new Error(error.message || 'Server error'));
+  private handleError(error: any): Observable<never> {
+    console.error('An error occurred:', error);  // Log the error
+    throw new Error('Something went wrong while fetching videos. Please try again later.');
   }
 }

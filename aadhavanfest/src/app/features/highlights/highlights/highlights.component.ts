@@ -30,35 +30,18 @@ export class HighlightsComponent implements OnInit {
       this.fetchVideos(this.selectedTab);
     });
   }
+  
 
   selectTab(tab: 'inside' | 'outside') {
     this.selectedTab = tab;
     this.fetchVideos(tab);
   }
 
-  // fetchVideos(tab: 'inside' | 'outside') {
-  //   const subcategory = tab === 'inside' ? 'inside_college' : 'outside_college';
-
-  //   this.apiService.getHighlights(subcategory).subscribe(
-  //     (videos: any[]) => {
-  //       console.log('Fetched videos:', videos);
-  //       if (tab === 'inside') {
-  //         this.videosInside = videos;
-  //       } else {
-  //         this.videosOutside = videos;
-  //       }
-  //     },
-  //     (error) => {
-  //       console.error('Error fetching videos:', error);
-  //       this.toastr.error('Failed to fetch videos. Please try again later.');
-  //     }
-  //   );
-  // }
-
   fetchVideos(tab: 'inside' | 'outside') {
     const subcategory = tab === 'inside' ? 'Inside College' : 'Outside College';
-  
-    this.apiService.getHighlights(subcategory).subscribe(
+    
+    // Use getVideosBySubcategory instead of getHighlights
+    this.apiService.getVideosBySubcategory(subcategory).subscribe(
       (videos: any[]) => {
         console.log('Fetched videos:', videos);
         if (tab === 'inside') {
@@ -67,13 +50,12 @@ export class HighlightsComponent implements OnInit {
           this.videosOutside = videos;
         }
       },
-      (error) => {
+      (error: any) => {  // Explicitly typing error as 'any'
         console.error('Error fetching videos:', error);
         this.toastr.error('Failed to fetch videos. Please try again later.');
       }
     );
   }
-  
 
   playAndUnmute(video: HTMLVideoElement) {
     video.muted = false;

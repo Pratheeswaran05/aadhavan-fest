@@ -7,6 +7,7 @@ import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import { RouterModule } from '@angular/router';
 import { PreloaderComponent } from './preloader/preloader.component';
+import { IntroComponent } from './intro/intro.component';
 
 
 
@@ -16,6 +17,7 @@ import { PreloaderComponent } from './preloader/preloader.component';
     FooterComponent,
     HeaderComponent,
     PreloaderComponent,
+    IntroComponent,
   ],
   imports: [
     CommonModule,
@@ -25,7 +27,8 @@ import { PreloaderComponent } from './preloader/preloader.component';
   exports: [
     HeaderComponent,
     PreloaderComponent,
-    FooterComponent
+    FooterComponent,
+    IntroComponent
   ]
 })
 export class SharedModule { }
