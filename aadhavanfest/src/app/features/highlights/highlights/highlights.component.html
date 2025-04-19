@@ -24,10 +24,12 @@
       >
         <!-- Thumbnail (fallback) -->
         <img
-          [src]="video.thumbnail_url"
-          alt="Video thumbnail"
-          class="absolute w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 sm:block hidden"
-        />
+        [src]="'http://localhost:5000/uploads/thumbnails/' + video.thumbnail"
+        alt="Video thumbnail"
+        class="absolute w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 sm:block hidden"
+      />
+      
+      
   
         <!-- Desktop video (hover interaction) -->
         <video

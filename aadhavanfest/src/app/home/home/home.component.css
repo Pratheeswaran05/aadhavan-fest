@@ -1,11 +1,3 @@
- /* Title styling */
-  /* .title {
-    text-align: center;
-    font-size: 1.25rem;
-    font-weight: bold;
-    margin-bottom: 1.5rem;
-  }
-   */
   /* Container for team members with horizontal scrolling */
   .team-members {
     display: flex;

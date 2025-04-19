@@ -94,4 +94,5 @@ export class HeaderComponent {
   toggleDropdown(menuId: string) {  // Change type to string
     this.expandedMenu = this.expandedMenu === menuId ? null : menuId;
   }
+
 }

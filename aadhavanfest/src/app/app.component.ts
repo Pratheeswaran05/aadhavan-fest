@@ -13,7 +13,7 @@ export class AppComponent {
   isAuthPage = false;
   isLoading = true;
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {
+  constructor(public router: Router, private activatedRoute: ActivatedRoute) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.checkAuthPage();

@@ -58,6 +58,18 @@ export class AchievementsComponent implements OnInit {
     );
   }
 
+  // playVideo(event: Event) {
+  //   const video = event.target as HTMLVideoElement;
+  //   video.play();
+  // }
+  
+  // pauseVideo(event: Event) {
+  //   const video = event.target as HTMLVideoElement;
+  //   video.pause();
+  //   video.currentTime = 0; // Optional: reset video on leave
+  // }
+  
+
   playAndUnmute(video: HTMLVideoElement) {
     video.muted = false;
     video.play().catch(err => {

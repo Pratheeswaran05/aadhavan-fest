@@ -22,7 +22,6 @@
   </div>
   
   <!-- Tab Content Cards -->
-  <!-- Tab Content Cards -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-2 sm:p-6">
   <div 
     *ngFor="let video of (selectedTab === 'district' ? videosDistrict : selectedTab === 'state' ? videosState : videosNational)"
@@ -30,21 +29,26 @@
   >
     <!-- Thumbnail -->
     <img
-      [src]="video.thumbnail"
-      alt="Video thumbnail"
-      class="absolute w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 sm:block hidden"
-    />
+    [src]="'http://localhost:5000/uploads/thumbnails/' + video.thumbnail"
+    alt="Video thumbnail"
+    class="absolute w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 sm:block hidden"
+  />
+  
 
     <!-- Video -->
     <video
-      class="absolute w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300 sm:block hidden"
-      loop
-      muted
-      playsinline
-      preload="metadata"
-    >
-      <source [src]="'http://localhost:5000/uploads/videos/' + video.video_url" type="video/mp4" />
-    </video>
+    #videoRef
+    class="absolute w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300 sm:block hidden"
+    loop
+    muted
+    playsinline
+    preload="metadata"
+    (mouseenter)="playAndUnmute(videoRef)"
+    (mouseleave)="pauseAndMute(videoRef)"
+  >
+    <source [src]="'http://localhost:5000/uploads/videos/' + video.video_url" type="video/mp4" />
+  </video>
+  
 
     <!-- Video Info -->
     <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 z-10">
