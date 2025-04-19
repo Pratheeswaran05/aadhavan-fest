@@ -11,4 +11,107 @@
         Your browser does not support the video tag.
     </video>
   </div>
+
+
+<!-- About Us -->
+<section class="bg-white py-12 px-6 md:px-16">
+    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-10">About Us</h2>
   
+    <div class="flex flex-col md:flex-row items-center gap-10">
+      <!-- Text Content -->
+      <div class="md:w-1/2 space-y-6 text-gray-700">
+        <div>
+          <h3 class="text-xl font-semibold text-gray-900 mb-2">Welcome to Aadhavan Fest!</h3>
+          <p class="leading-relaxed">
+            Aadhavan Fest is a vibrant celebration of creativity, culture, and community, hosted annually to bring together students, artists, performers, and enthusiasts from all walks of life. Whether you're passionate about music, dance, theatre, or technology, Aadhavan Fest offers a platform for showcasing talent, building connections, and experiencing the best of campus life.
+          </p>
+        </div>
+  
+        <div>
+          <h3 class="text-xl font-semibold text-gray-900 mb-2">Our Mission</h3>
+          <p class="leading-relaxed">
+            Our mission is to provide a unique, inclusive experience where students can explore their talents, foster teamwork, and create memories that last a lifetime. From electrifying performances to thought-provoking workshops, Aadhavan Fest is all about bringing together diverse ideas and cultures under one roof. We aim to inspire creativity and celebrate the spirit of innovation and collaboration.
+          </p>
+        </div>
+  
+        <!-- ✅ Keep link INSIDE the text container -->
+        <div>
+          <a 
+            href="https://www.aadhavancollege.org/" 
+            target="_blank" 
+            class="inline-block mt-2 text-blue-600 hover:text-blue-800 font-medium transition duration-200"
+          >
+            Visit Our College Website →
+          </a>
+        </div>
+      </div>
+  
+      <!-- Image -->
+      <div class="md:w-1/2">
+        <img 
+          src="/assets/images/college.jpg" 
+          alt="Aadhavan College" 
+          class="w-full rounded-2xl shadow-lg hover:scale-105 transition duration-300 ease-in-out"
+        >
+      </div>
+    </div>
+  </section>
+  
+  
+<!-- Highlights-->
+<section class="bg-white py-12 px-6 md:px-16">
+    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-10">Highlights</h2>
+    
+    <!-- Container for the video cards -->
+    <div class="flex overflow-x-auto space-x-6 md:grid md:grid-cols-1 lg:grid-cols-3 gap-6 text-gray-700">
+      
+      <!-- Loop through the videos -->
+      <div *ngFor="let video of latestVideos" 
+           class="max-w-sm rounded-xl overflow-hidden shadow-lg bg-white hover:shadow-2xl transition duration-300 ease-in-out flex-shrink-0">
+        <div class="relative w-full h-56 overflow-hidden rounded-t-xl">
+          <video autoplay muted loop playsinline class="w-full h-full object-cover hover:scale-105 transition duration-300 ease-in-out">
+            <source [src]="'http://localhost:5000/' + video.video_url" type="video/mp4" />
+          </video>
+        </div>
+        <div class="p-4">
+          <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ video.title }}</h3>
+          <p class="text-sm text-gray-600">{{ video.description }}</p>
+        </div>
+      </div>
+  
+    </div>
+  </section>
+  
+  
+
+
+
+  <!-- staff and member -->
+<!-- Staff and Member Section -->
+<section class="bg-gray-100 py-12 px-6 md:px-16 h-screen overflow-hidden">
+    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-10">Our Team</h2>
+  
+    <div class="team-members">
+      <div class="member-card" *ngFor="let member of teamMembers">
+        <img [src]="member.imageUrl" [alt]="member.name" class="member-image">
+        <h3 class="member-name">{{ member.name }}</h3>
+        <p class="member-role">Member</p>
+        <p class="member-description">{{ member.description }}</p>
+        <a href="#" class="instagram-link">
+          <i class="fa fa-instagram mr-1"></i> dfe28
+        </a>
+      </div>
+    </div>
+</section>
+  
+  
+  
+  
+  
+  
+
+
+  <!-- contact us -->
+
+
+<!-- <app-footer></app-footer> -->

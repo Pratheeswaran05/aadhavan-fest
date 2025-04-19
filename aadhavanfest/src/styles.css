@@ -9,7 +9,24 @@ html, body {
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
 
+/* Hide the scrollbar for webkit browsers (Chrome, Safari) */
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide the scrollbar for Firefox */
+.scrollbar-hidden {
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Hide the scrollbar for Internet Explorer */
+.scrollbar-hidden {
+  -ms-overflow-style: none;  /* IE 10+ */
+}
 
 *,
 ::before,

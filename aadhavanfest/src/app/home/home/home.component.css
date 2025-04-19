@@ -1,0 +1,79 @@
+ /* Title styling */
+  /* .title {
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+  }
+   */
+  /* Container for team members with horizontal scrolling */
+  .team-members {
+    display: flex;
+    overflow-x: auto; /* Horizontal scrolling */
+    padding-bottom: 16px; /* Padding at the bottom */
+    scrollbar-width: none; /* For Firefox */
+  }
+  
+  /* Hide scrollbar in Webkit browsers (Chrome, Safari) */
+  .team-members::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Styling for individual member cards */
+  .member-card {
+    flex-shrink: 0;
+    width: 240px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 12px;
+    text-align: center;
+    margin-right: 16px;
+  }
+  
+  /* Member image styling */
+  .member-image {
+    width: 96px;
+    height: 96px;
+    margin: 0 auto;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 12px;
+  }
+  
+  /* Member name styling */
+  .member-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #2d3748; /* Dark gray */
+  }
+  
+  /* Member role styling */
+  .member-role {
+    font-size: 0.875rem;
+    color: #718096; /* Lighter gray */
+  }
+  
+  /* Member description styling */
+  .member-description {
+    font-size: 0.875rem;
+    color: #4a5568; /* Slightly darker gray */
+    margin-bottom: 12px;
+  }
+  
+  /* Instagram link styling */
+  .instagram-link {
+    display: inline-block;
+    background-color: black;
+    color: white;
+    font-size: 0.875rem;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+  }
+  
+  .instagram-link:hover {
+    opacity: 0.8;
+  }
+  

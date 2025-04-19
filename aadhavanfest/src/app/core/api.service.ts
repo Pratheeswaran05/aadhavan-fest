@@ -25,6 +25,13 @@ export class ApiService {
   private baseUrl = 'http://localhost:5000/api';
 
   constructor(private http: HttpClient) {}
+  
+
+  // for home
+  getLatestVideos(limit: number) {
+    return this.http.get<any[]>(`${this.baseUrl}/videos/highlights?limit=${limit}`);
+  }
+  
 
   getHighlights(category: string, subcategory: string) {
     // return this.http.get<any[]>(`${this.apiUrl}/highlights?category=${category}&subcategory=${subcategory}`);
