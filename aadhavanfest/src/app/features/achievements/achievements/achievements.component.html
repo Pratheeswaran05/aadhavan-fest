@@ -1,63 +1,92 @@
-<div class="p-2">
+<!-- Full Background Wrapper -->
+<div class="min-h-screen bg-bg2 bg-cover bg-center  -mt-[34px] ">
+
   <!-- Tabs -->
-  <div class="flex justify-center mb-6">
+  <div class="flex flex-wrap justify-center items-center bg-black/50 backdrop-blur-sm text-white rounded-full px-6 py-3 space-x-4 w-fit mx-auto my-6 mt-[10px]">
     <button 
       (click)="selectTab('district')" 
-      [ngClass]="selectedTab === 'district' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'"
-      class="px-4 py-2 mx-2 rounded-lg">
+      [ngClass]="selectedTab === 'district' ? 'bg-red-500 text-white px-4 py-2 rounded-full font-bold uppercase' : 'hover:text-gray-300 px-4 py-2 rounded-full font-bold uppercase'"
+      class="text-sm transition-all">
       District
     </button>
     <button 
       (click)="selectTab('state')" 
-      [ngClass]="selectedTab === 'state' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'"
-      class="px-4 py-2 mx-2 rounded-lg">
+      [ngClass]="selectedTab === 'state' ? 'bg-red-500 text-white px-4 py-2 rounded-full font-bold uppercase' : 'hover:text-gray-300 px-4 py-2 rounded-full font-bold uppercase'"
+      class="text-sm transition-all">
       State
     </button>
     <button 
       (click)="selectTab('national')" 
-      [ngClass]="selectedTab === 'national' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'"
-      class="px-4 py-2 mx-2 rounded-lg">
+      [ngClass]="selectedTab === 'national' ? 'bg-red-500 text-white px-4 py-2 rounded-full font-bold uppercase' : 'hover:text-gray-300 px-4 py-2 rounded-full font-bold uppercase'"
+      class="text-sm transition-all">
       National
     </button>
   </div>
-  
-  <!-- Tab Content Cards -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-2 sm:p-6">
-  <div 
-    *ngFor="let video of (selectedTab === 'district' ? videosDistrict : selectedTab === 'state' ? videosState : videosNational)"
-    class="relative bg-white shadow-md rounded-2xl overflow-hidden group aspect-video"
-  >
-    <!-- Thumbnail -->
-    <img
-    [src]="'http://localhost:5000/uploads/thumbnails/' + video.thumbnail"
-    alt="Video thumbnail"
-    class="absolute w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 sm:block hidden"
-  />
-  
 
-    <!-- Video -->
-    <video
-    #videoRef
-    class="absolute w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300 sm:block hidden"
-    loop
-    muted
-    playsinline
-    preload="metadata"
-    (mouseenter)="playAndUnmute(videoRef)"
-    (mouseleave)="pauseAndMute(videoRef)"
-  >
-    <source [src]="'http://localhost:5000/uploads/videos/' + video.video_url" type="video/mp4" />
-  </video>
-  
+  <!-- Black Card -->
+  <div class="bg-black/50 backdrop-blur-lg rounded-2xl p-6 shadow-xl w-full max-w-6xl mx-auto">
 
-    <!-- Video Info -->
-    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 z-10">
-      <h3 class="text-white font-semibold text-base sm:text-lg truncate">
-        {{ video.title }}
-      </h3>
-      <p class="text-gray-300 text-xs sm:text-sm mt-1 line-clamp-2">
-        {{ video.description }}
-      </p>
+    <!-- Video Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-2 sm:p-6">
+      <div 
+        *ngFor="let video of (selectedTab === 'district' ? videosDistrict : selectedTab === 'state' ? videosState : videosNational)"
+        class="relative rounded-2xl overflow-hidden backdrop-blur-md bg-black/50 shadow-lg group aspect-video"
+      >
+
+        <!-- Thumbnail or Video -->
+        <div class="relative w-full h-full">
+          <img
+            *ngIf="!video.isPlaying"
+            [src]="'http://localhost:5000/uploads/thumbnails/' + video.thumbnail"
+            alt="Video Thumbnail"
+            class="w-full h-full object-cover"
+          />
+          <video
+            *ngIf="video.isPlaying"
+            [src]="'http://localhost:5000/uploads/videos/' + video.video_url"
+            class="w-full h-full object-cover"
+            controls
+            autoplay
+            muted
+            playsinline
+          ></video>
+
+          <!-- Play Button -->
+          <button 
+            *ngIf="!video.isPlaying"
+            (click)="playVideo(video)"
+            class="absolute inset-0 flex items-center justify-center text-6xl text-white bg-black/40 hover:bg-black/60 transition"
+          >
+            <i class="fas fa-play-circle"></i>
+          </button>
+
+        </div>
+
+        <!-- Video Title -->
+        <div class="bg-black/70 p-2 text-center">
+          <h3 class="text-white font-semibold text-base truncate">
+            {{ video.title }}
+          </h3>
+        </div>
+
+      </div>
     </div>
+
   </div>
+
+  <!-- Pagination -->
+  <div class="flex justify-center items-center mt-6 space-x-2 text-white">
+    <button>&lt;</button>
+    <button class="bg-red-500 w-8 h-8 rounded-full text-center">1</button>
+    <button>2</button>
+    <button>3</button>
+    <button>4</button>
+    <span>...</span>
+    <button>35</button>
+    <button>&gt;</button>
+  </div>
+
 </div>
+
+<!-- FontAwesome Icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>

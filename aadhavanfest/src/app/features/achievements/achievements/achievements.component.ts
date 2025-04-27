@@ -15,6 +15,7 @@ export class AchievementsComponent implements OnInit {
   videosDistrict: any[] = [];
   videosState: any[] = [];
   videosNational: any[] = [];
+  isLoading: boolean = false;
 
   constructor(
     private apiService: ApiService,
@@ -38,11 +39,11 @@ export class AchievementsComponent implements OnInit {
   }
 
   fetchVideos(tab: 'district' | 'state' | 'national') {
-    const subcategory = tab.charAt(0).toUpperCase() + tab.slice(1); // Capitalize
+    const subcategory = tab.charAt(0).toUpperCase() + tab.slice(1);
+    this.isLoading = true;
 
     this.apiService.getAchievements(subcategory).subscribe(
       (videos: any[]) => {
-        console.log('Fetched videos:', videos);
         if (tab === 'district') {
           this.videosDistrict = videos;
         } else if (tab === 'state') {
@@ -50,31 +51,23 @@ export class AchievementsComponent implements OnInit {
         } else if (tab === 'national') {
           this.videosNational = videos;
         }
+        this.isLoading = false;
       },
       (error: any) => {
         console.error('Error fetching videos:', error);
         this.toastr.error('Failed to fetch videos. Please try again later.');
+        this.isLoading = false;
       }
     );
   }
 
-  // playVideo(event: Event) {
-  //   const video = event.target as HTMLVideoElement;
-  //   video.play();
-  // }
-  
-  // pauseVideo(event: Event) {
-  //   const video = event.target as HTMLVideoElement;
-  //   video.pause();
-  //   video.currentTime = 0; // Optional: reset video on leave
-  // }
-  
+  playVideo(video: any) {
+    video.isPlaying = true;
+  }
 
   playAndUnmute(video: HTMLVideoElement) {
     video.muted = false;
-    video.play().catch(err => {
-      console.error('Play error:', err);
-    });
+    video.play().catch(err => console.error('Play error:', err));
   }
 
   pauseAndMute(video: HTMLVideoElement) {
@@ -96,4 +89,5 @@ export class AchievementsComponent implements OnInit {
       }).catch(() => alert('Copy failed'));
     }
   }
+
 }

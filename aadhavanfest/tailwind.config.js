@@ -10,6 +10,8 @@ module.exports = {
       backgroundImage: {
         'custom-bg': "url('/assets/images/bg.jpg')",
         'bg1' : "url('/assets/bg/bgimg.jpg')",
+        'bg2' : "url('/assets/bg/pavel.jpg')",
+
       },
       colors: {
         darkBlue: "#0D3B66",
