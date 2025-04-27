@@ -10,12 +10,13 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./achievements.component.css']
 })
 export class AchievementsComponent implements OnInit {
-
   selectedTab: 'district' | 'state' | 'national' = 'district';
   videosDistrict: any[] = [];
   videosState: any[] = [];
   videosNational: any[] = [];
   isLoading: boolean = false;
+  currentPage: number = 1;
+  totalPages: number = 1;  // Default value, will be updated based on the total video count
 
   constructor(
     private apiService: ApiService,
@@ -29,20 +30,56 @@ export class AchievementsComponent implements OnInit {
       if (tab === 'district' || tab === 'state' || tab === 'national') {
         this.selectedTab = tab;
       }
-      this.fetchVideos(this.selectedTab);
+      this.fetchVideos(this.selectedTab, this.currentPage);
     });
+  }
+  playVideo(video: any): void {
+    video.isPlaying = true;  // Mark the video as playing
+    // Update the array to trigger Angular change detection
+    if (this.selectedTab === 'district') {
+      this.videosDistrict = [...this.videosDistrict];
+    } else if (this.selectedTab === 'state') {
+      this.videosState = [...this.videosState];
+    } else if (this.selectedTab === 'national') {
+      this.videosNational = [...this.videosNational];
+    }
   }
 
   selectTab(tab: 'district' | 'state' | 'national') {
     this.selectedTab = tab;
-    this.fetchVideos(tab);
+    this.currentPage = 1;  // Reset to the first page when tab is changed
+    this.fetchVideos(tab, this.currentPage);
   }
 
-  fetchVideos(tab: 'district' | 'state' | 'national') {
+  // fetchVideos(tab: 'district' | 'state' | 'national', page: number) {
+  //   const subcategory = tab.charAt(0).toUpperCase() + tab.slice(1);
+  //   this.isLoading = true;
+
+  //   this.apiService.getAchievements(subcategory, page).subscribe(
+  //     (response: any) => {
+  //       if (tab === 'district') {
+  //         this.videosDistrict = response.videos;
+  //       } else if (tab === 'state') {
+  //         this.videosState = response.videos;
+  //       } else if (tab === 'national') {
+  //         this.videosNational = response.videos;
+  //       }
+  //       this.totalPages = response.totalPages;
+  //       this.isLoading = false;
+  //     },
+  //     (error: any) => {
+  //       console.error('Error fetching videos:', error);
+  //       this.toastr.error('Failed to fetch videos. Please try again later.');
+  //       this.isLoading = false;
+  //     }
+  //   );
+  // }
+
+  fetchVideos(tab: 'district' | 'state' | 'national', page: number) {
     const subcategory = tab.charAt(0).toUpperCase() + tab.slice(1);
     this.isLoading = true;
-
-    this.apiService.getAchievements(subcategory).subscribe(
+  
+    this.apiService.getAchievements(subcategory, page).subscribe(
       (videos: any[]) => {
         if (tab === 'district') {
           this.videosDistrict = videos;
@@ -60,34 +97,11 @@ export class AchievementsComponent implements OnInit {
       }
     );
   }
-
-  playVideo(video: any) {
-    video.isPlaying = true;
-  }
-
-  playAndUnmute(video: HTMLVideoElement) {
-    video.muted = false;
-    video.play().catch(err => console.error('Play error:', err));
-  }
-
-  pauseAndMute(video: HTMLVideoElement) {
-    video.pause();
-    video.muted = true;
-  }
-
-  shareVideo(video: any) {
-    const url = `${window.location.origin}/videos/${video.id}`;
-    if (navigator.share) {
-      navigator.share({
-        title: video.title,
-        text: video.description,
-        url: url,
-      }).catch(err => console.error('Sharing failed:', err));
-    } else {
-      navigator.clipboard.writeText(url).then(() => {
-        alert('Video link copied!');
-      }).catch(() => alert('Copy failed'));
+  
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.fetchVideos(this.selectedTab, this.currentPage);
     }
   }
-
 }

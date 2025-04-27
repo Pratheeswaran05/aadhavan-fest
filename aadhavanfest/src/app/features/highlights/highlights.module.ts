@@ -5,6 +5,7 @@ import { HighlightsRoutingModule } from './highlights-routing.module';
 import { HighlightsComponent } from './highlights/highlights.component';
 
 
+
 @NgModule({
   declarations: [
     HighlightsComponent

@@ -41,11 +41,17 @@ export class ApiService {
    }
 
 
-  getAchievements(subcategory: string) {
-    return this.http.get<Video[]>(`${this.baseUrl}/videos/achievements/${subcategory}`).pipe(
+  // getAchievements(subcategory: string) {
+  //   return this.http.get<Video[]>(`${this.baseUrl}/videos/achievements/${subcategory}`).pipe(
+  //     catchError(this.handleError)
+  //   );
+  // }
+  getAchievements(subcategory: string, page: number): Observable<Video[]> {
+    return this.http.get<Video[]>(`${this.baseUrl}/videos/achievements/${subcategory}?page=${page}`).pipe(
       catchError(this.handleError)
     );
   }
+  
   
   
   getAllGalleryVideos(): Observable<Video[]> {
@@ -54,16 +60,6 @@ export class ApiService {
     );
   }
   
-  // getAllGalleryPhotos(): Observable<{ photo_id: number, image_url: string }[]> {
-  //   return this.http.get<{ photo_id: number, image_url: string }[]>(`${this.baseUrl}/photos/all`).pipe(
-  //     catchError(this.handleError)
-  //   );
-  // }
-  // getAllGalleryPhotos(): Observable<any[]> {
-  //   return this.http.get<any[]>(`${this.baseUrl}/photos/all`).pipe(
-  //     catchError(this.handleError)
-  //   );
-  // }
 
   getAllGalleryPhotos(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/photos/`).pipe(  // Using `/photos/` route now
