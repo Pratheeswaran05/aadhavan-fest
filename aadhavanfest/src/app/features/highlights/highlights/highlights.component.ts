@@ -24,12 +24,6 @@ export class HighlightsComponent implements OnInit {
     private toastr: ToastrService
   ) {}
 
-  openVideoInNewTab(video: any) {
-    // Navigate to VideoPlayerComponent with the selected video ID
-    this.router.navigate(['/video', video.id]);
-  }
-  
-
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const tab = params.get('tab') as 'inside' | 'outside';
@@ -39,35 +33,34 @@ export class HighlightsComponent implements OnInit {
       this.fetchVideos(this.selectedTab);
     });
   }
-  
-  playVideo(video: any) {
-    video.isPlaying = true; // Set the video to play
+
+  openVideoInNewTab(video: any) {
+    this.router.navigate(['/video', video.id]);
   }
 
-  // Optionally, you can also create a method to stop the video
+  playVideo(video: any) {
+    video.isPlaying = true;
+  }
+
   pauseVideo(video: any) {
-    video.isPlaying = false; // Set the video to pause
+    video.isPlaying = false;
   }
 
   playAndUnmute(video: HTMLVideoElement) {
-    // Mute for autoplay (if not already muted)
     if (!video.muted) {
       video.muted = true;
     }
-  
-    // Only play the video if it's not already playing
     if (video.paused) {
       video.play().catch((err) => {
         console.warn('Autoplay failed', err);
       });
     }
   }
-  
+
   pauseAndMute(video: HTMLVideoElement) {
-    // Only pause the video if it's playing
     if (!video.paused) {
       video.pause();
-      video.currentTime = 0; // Reset the video to the start
+      video.currentTime = 0;
     }
   }
 
@@ -78,39 +71,29 @@ export class HighlightsComponent implements OnInit {
 
   fetchVideos(tab: 'inside' | 'outside') {
     const subcategory = tab === 'inside' ? 'Inside College' : 'Outside College';
-  
+
     this.apiService.getVideosBySubcategory(subcategory).subscribe(
       (videos: any[]) => {
         console.log('Fetched videos:', videos);
-  
-        // Loop through videos and clean thumbnail URLs
+
         videos.forEach(video => {
           if (video.thumbnail_url) {
-            // Fix duplicate '/uploads/uploads'
-            // const cleanedPath = video.thumbnail_url.replace('/uploads/uploads', '/uploads');
+            // console.log('Original thumbnail_url:', video.thumbnail_url);
+
+            let cleanedPath = video.thumbnail_url
+              .replace(/\\/g, '/')
+              .replace('/uploads/uploads', '/uploads');
+
+            if (!cleanedPath.startsWith('/')) {
+              cleanedPath = '/' + cleanedPath;
+            }
 
             // console.log('Cleaned thumbnail path:', cleanedPath);
-            console.log('Original thumbnail_url:', video.thumbnail_url);
-let cleanedPath = video.thumbnail_url
-  .replace(/\\/g, '/') // Convert backslashes to slashes
-  .replace('/uploads/uploads', '/uploads'); // Fix duplicate uploads
-
-// Ensure a single leading slash
-if (!cleanedPath.startsWith('/')) {
-  cleanedPath = '/' + cleanedPath;
-}
-
-console.log('Cleaned thumbnail path:', cleanedPath);
-
-video.thumbnail_url = `http://localhost:5000${cleanedPath}`;
-console.log('Final thumbnail URL:', video.thumbnail_url);
-
-  
-            // Add backend server URL in front
-            // video.thumbnail_url = `http://localhost:5000${cleanedPath}`;
+            video.thumbnail_url = `http://localhost:5000${cleanedPath}`;
+            // console.log('Final thumbnail URL:', video.thumbnail_url);
           }
         });
-  
+
         if (tab === 'inside') {
           this.videosInside = videos;
         } else {
@@ -123,36 +106,10 @@ console.log('Final thumbnail URL:', video.thumbnail_url);
       }
     );
   }
-  
-
-
-  // Navigate to the next video
-  nextVideo() {
-    const videoList = this.selectedTab === 'inside' ? this.videosInside : this.videosOutside;
-    const currentIndex = videoList.indexOf(this.currentVideo);
-
-    // If not the last video in the list, set the next video
-    if (currentIndex < videoList.length - 1) {
-      this.currentVideo = videoList[currentIndex + 1];
-    }
-  }
-
-  // Navigate to the previous video
-  prevVideo() {
-    const videoList = this.selectedTab === 'inside' ? this.videosInside : this.videosOutside;
-    const currentIndex = videoList.indexOf(this.currentVideo);
-
-    // If not the first video in the list, set the previous video
-    if (currentIndex > 0) {
-      this.currentVideo = videoList[currentIndex - 1];
-    }
-  }
-
-
 
 
   shareVideo(video: any) {
-    const url = `${window.location.origin}/videos/${video.id}`
+    const url = `${window.location.origin}/videos/${video.id}`;
     if (navigator.share) {
       navigator.share({
         title: video.title,
@@ -165,63 +122,4 @@ console.log('Final thumbnail URL:', video.thumbnail_url);
       }).catch(() => alert('Copy failed'));
     }
   }
-
-
-  
 }
-
-
-
-  // fetchVideos(tab: 'inside' | 'outside') {
-  //   const subcategory = tab === 'inside' ? 'Inside College' : 'Outside College';
-    
-  //   // Use getVideosBySubcategory instead of getHighlights
-  //   this.apiService.getVideosBySubcategory(subcategory).subscribe(
-  //     (videos: any[]) => {
-  //       console.log('Fetched videos:', videos);
-  //      if (tab === 'inside') {
-  //         this.videosInside = videos;
-  //       } else {
-  //         this.videosOutside = videos;
-  //       }
-  //     },
-  //     (error: any) => {  // Explicitly typing error as 'any'
-  //       console.error('Error fetching videos:', error);
-  //       this.toastr.error('Failed to fetch videos. Please try again later.');
-  //     }
-  //   );
-  // }
-
-  // fetchVideos(tab: 'inside' | 'outside') {
-  //   const subcategory = tab === 'inside' ? 'Inside College' : 'Outside College';
-    
-  //   // Use getVideosBySubcategory instead of getHighlights
-  //   this.apiService.getVideosBySubcategory(subcategory).subscribe(
-  //     (videos: any[]) => {
-  //       console.log('Fetched videos:', videos);
-  
-  //       // Loop through videos and log their thumbnail URLs
-  //       videos.forEach(video => {
-  //         console.log(video.thumbnail_url); // Log the thumbnail URL for debugging
-  //       });
-
-  //       // Clean up the thumbnail_url for each video
-  //     videos.forEach(video => {
-  //       // Check and clean the thumbnail URL
-  //       if (video.thumbnail_url) {
-  //         video.thumbnail_url = video.thumbnail_url.replace('/uploads/uploads', '/uploads');
-  //       }
-  //     });
-  
-  //       if (tab === 'inside') {
-  //         this.videosInside = videos;
-  //       } else {
-  //         this.videosOutside = videos;
-  //       }
-  //     },
-  //     (error: any) => {  // Explicitly typing error as 'any'
-  //       console.error('Error fetching videos:', error);
-  //       this.toastr.error('Failed to fetch videos. Please try again later.');
-  //     }
-  //   );
-  // }

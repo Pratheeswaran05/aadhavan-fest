@@ -24,6 +24,16 @@ export class AchievementsComponent implements OnInit {
     private route: ActivatedRoute,
   ) {}
 
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const tab = params.get('tab') as 'district' | 'state' | 'national';
+      if (tab === 'district' || tab === 'state' || tab === 'national') {
+        this.selectedTab = tab;
+      }
+      this.fetchVideos(this.selectedTab, this.currentPage);
+    });
+  }
+
   openVideoInNewTab(video: any): void {
     window.open(video.url, '_blank');
   }
@@ -38,18 +48,8 @@ export class AchievementsComponent implements OnInit {
     videoRef.muted = true;
   }
 
-  ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const tab = params.get('tab') as 'district' | 'state' | 'national';
-      if (tab === 'district' || tab === 'state' || tab === 'national') {
-        this.selectedTab = tab;
-      }
-      this.fetchVideos(this.selectedTab, this.currentPage);
-    });
-  }
   playVideo(video: any): void {
-    video.isPlaying = true;  // Mark the video as playing
-    // Update the array to trigger Angular change detection
+    video.isPlaying = true;
     if (this.selectedTab === 'district') {
       this.videosDistrict = [...this.videosDistrict];
     } else if (this.selectedTab === 'state') {
@@ -65,72 +65,28 @@ export class AchievementsComponent implements OnInit {
     this.fetchVideos(tab, this.currentPage);
   }
 
-  // fetchVideos(tab: 'district' | 'state' | 'national', page: number) {
-  //   const subcategory = tab.charAt(0).toUpperCase() + tab.slice(1);
-  //   this.isLoading = true;
-
-  //   this.apiService.getAchievements(subcategory, page).subscribe(
-  //     (response: any) => {
-  //       if (tab === 'district') {
-  //         this.videosDistrict = response.videos;
-  //       } else if (tab === 'state') {
-  //         this.videosState = response.videos;
-  //       } else if (tab === 'national') {
-  //         this.videosNational = response.videos;
-  //       }
-  //       this.totalPages = response.totalPages;
-  //       this.isLoading = false;
-  //     },
-  //     (error: any) => {
-  //       console.error('Error fetching videos:', error);
-  //       this.toastr.error('Failed to fetch videos. Please try again later.');
-  //       this.isLoading = false;
-  //     }
-  //   );
-  // }
-
-  // fetchVideos(tab: 'district' | 'state' | 'national', page: number) {
-  //   const subcategory = tab.charAt(0).toUpperCase() + tab.slice(1);
-  //   this.isLoading = true;
-  
-  //   this.apiService.getAchievements(subcategory, page).subscribe(
-  //     (videos: any[]) => {
-  //       if (tab === 'district') {
-  //         this.videosDistrict = videos;
-  //       } else if (tab === 'state') {
-  //         this.videosState = videos;
-  //       } else if (tab === 'national') {
-  //         this.videosNational = videos;
-  //       }
-  //       this.isLoading = false;
-  //     },
-  //     (error: any) => {
-  //       console.error('Error fetching videos:', error);
-  //       this.toastr.error('Failed to fetch videos. Please try again later.');
-  //       this.isLoading = false;
-  //     }
-  //   );
-  // }
-  
   fetchVideos(tab: 'district' | 'state' | 'national', page: number) {
     const subcategory = tab.charAt(0).toUpperCase() + tab.slice(1);
     this.isLoading = true;
-  
+
     this.apiService.getAchievements(subcategory, page).subscribe(
       (videos: any[]) => {
         console.log('Fetched videos:', videos);
-  
-        // Loop through videos and clean thumbnail URLs
+
         videos.forEach(video => {
           if (video.thumbnail_url) {
-            // Fix duplicate '/uploads/uploads'
-            const cleanedPath = video.thumbnail_url.replace('/uploads/uploads', '/uploads');
-  
-            // Add backend server URL in front
+            let cleanedPath = video.thumbnail_url
+              .replace(/\\/g, '/')
+              .replace('/uploads/uploads', '/uploads');
+
+            if (!cleanedPath.startsWith('/')) {
+              cleanedPath = '/' + cleanedPath;
+            }
+
             video.thumbnail_url = `http://localhost:5000${cleanedPath}`;
           }
         });
-  
+
         if (tab === 'district') {
           this.videosDistrict = videos;
         } else if (tab === 'state') {
@@ -138,7 +94,7 @@ export class AchievementsComponent implements OnInit {
         } else if (tab === 'national') {
           this.videosNational = videos;
         }
-  
+
         this.isLoading = false;
       },
       (error: any) => {
@@ -148,7 +104,7 @@ export class AchievementsComponent implements OnInit {
       }
     );
   }
-  
+
   goToPage(page: number) {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
