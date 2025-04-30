@@ -8,6 +8,7 @@ import { HeaderComponent } from './header/header.component';
 import { RouterModule } from '@angular/router';
 import { PreloaderComponent } from './preloader/preloader.component';
 import { IntroComponent } from './intro/intro.component';
+import { VideoplayerComponent } from './videoplayer/videoplayer.component';
 
 
 
@@ -18,6 +19,7 @@ import { IntroComponent } from './intro/intro.component';
     HeaderComponent,
     PreloaderComponent,
     IntroComponent,
+    VideoplayerComponent,
   ],
   imports: [
     CommonModule,
@@ -28,7 +30,8 @@ import { IntroComponent } from './intro/intro.component';
     HeaderComponent,
     PreloaderComponent,
     FooterComponent,
-    IntroComponent
+    IntroComponent,
+    VideoplayerComponent
   ]
 })
 export class SharedModule { }

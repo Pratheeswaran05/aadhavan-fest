@@ -1,0 +1,9 @@
+<div *ngIf="video">
+    <video class="w-full h-[80vh] object-contain" controls autoplay>
+      <source [src]="'http://localhost:5000/' + video.video_url" type="video/mp4" />
+    </video>
+    <div *ngIf="video.title">
+      <h2>{{ video.title }}</h2>
+      <p>{{ video.description }}</p>
+    </div>
+  </div>

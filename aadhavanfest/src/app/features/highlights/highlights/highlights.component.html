@@ -1,5 +1,7 @@
+<!-- 🔹 Background Wrapper -->
 <div class="min-h-screen bg-bg2 bg-cover bg-center -mt-[34px] flex flex-col items-center">
-  <!-- Tabs -->
+
+  <!-- 🔹 Tabs -->
   <div class="flex flex-wrap justify-center items-center bg-black/50 backdrop-blur-sm text-white rounded-full px-6 py-3 space-x-4 w-fit mx-auto mt-10">
     <button 
       (click)="selectTab('inside')" 
@@ -7,6 +9,7 @@
       class="text-sm transition-all font-bold">
       INSIDE COLLEGE
     </button>
+
     <button 
       (click)="selectTab('outside')" 
       [ngClass]="selectedTab === 'outside' ? 'bg-red-500 text-white px-4 py-2 rounded-full font-bold' : 'hover:bg-gray-300 px-4 py-2 rounded-full'"
@@ -15,129 +18,76 @@
     </button>
   </div>
 
-  <!-- Black Card with Videos -->
+  <!-- 🔹 Video Card Container -->
   <div class="bg-black/50 backdrop-blur-lg rounded-2xl p-6 shadow-xl w-full max-w-6xl mx-auto mt-6">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- 🔄 Loop through selected tab videos -->
       <ng-container *ngIf="selectedTab === 'inside' || selectedTab === 'outside'">
         <div 
-          *ngFor="let video of selectedTab === 'inside' ? videosInside : videosOutside"
+          *ngFor="let video of (selectedTab === 'inside' ? videosInside : videosOutside)"
           class="relative bg-white shadow-md rounded-2xl overflow-hidden group aspect-video"
         >
-        <!-- thumbnail -->
-        <!-- <img
-        [src]="video.thumbnail_url || 'assets/default-thumbnail.jpg'"
-        alt="Video thumbnail"
-        class="absolute w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 sm:block hidden"
-      /> -->
-      <ng-container *ngIf="selectedTab === 'inside' || selectedTab === 'outside'">
-  <div *ngFor="let video of (selectedTab === 'inside' ? videosInside : videosOutside)"
-       class="relative bg-white shadow-md rounded-2xl overflow-hidden group aspect-video">
-       <!-- thumbnail -->
-  <img *ngIf="video.thumbnail_url" [src]="video.thumbnail_url" alt="Video thumbnail" class="absolute w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 sm:block hidden" />
-  
-  </div>
-</ng-container>
 
-        
+          <!-- 📷 Thumbnail Image -->
+          <!-- <img 
+            *ngIf="video.thumbnail_url" 
+            [src]="video.thumbnail_url" 
+            alt="Video thumbnail" 
+            class="absolute w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 sm:block hidden" 
+          /> -->
+          <img 
+  *ngIf="video.thumbnail_url" 
+  [src]="video.thumbnail_url" 
+  alt="Video thumbnail" 
+  class="absolute w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 sm:block hidden" 
+/>
 
-          <!-- SVG Play Button -->
+          <!-- ▶️ Play Button Overlay -->
           <button 
-            *ngIf="!video.isPlaying" 
             (click)="openVideoInNewTab(video)"
             class="absolute inset-0 flex items-center justify-center text-white bg-black/40 hover:bg-black/60 transition"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-              <path fill-rule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clip-rule="evenodd" />
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="size-6">
+              <path fill-rule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clip-rule="evenodd"/>
             </svg>
           </button>
 
-          <!-- Desktop video (hover interaction) -->
+          <!-- 🖥️ Desktop Hover Preview -->
           <video
-            *ngIf="video.isPlaying"
             #videoRef
             class="absolute w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300 sm:block hidden"
-            loop
-            muted
-            playsinline
-            preload="metadata"
-            (mouseenter)="playAndUnmute(videoRef)"
+            loop muted playsinline preload="metadata"
+            crossorigin="anonymous"
+            (mouseenter)="playAndUnmute(videoRef)" 
             (mouseleave)="pauseAndMute(videoRef)"
           >
             <source [src]="'http://localhost:5000/' + video.video_url" type="video/mp4" />
           </video>
 
-          <!-- Mobile video (autoplay) -->
+          <!-- 📱 Mobile Autoplay -->
           <video
-            *ngIf="video.isPlaying"
             class="block sm:hidden w-full h-full object-cover pointer-events-none"
-            autoplay
-            muted
-            loop
-            playsinline
-            preload="metadata"
+            autoplay muted loop playsinline preload="metadata"
           >
             <source [src]="'http://localhost:5000/' + video.video_url" type="video/mp4" />
           </video>
 
-          <!-- Duration label -->
+          <!-- 🕒 Duration Label -->
           <div class="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-md z-10">
             {{ video.duration }}
           </div>
 
-          <!-- Video Title & Description -->
+          <!-- 📝 Title -->
           <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 z-10">
             <h3 class="text-white font-semibold text-base sm:text-lg truncate">
               {{ video.title }}
             </h3>
-            <!-- <p class="text-gray-300 text-xs sm:text-sm mt-1 line-clamp-2">
-              {{ video.description }}
-            </p> -->
           </div>
-
-          <!-- Optional: Share Button (Mobile Friendly) -->
-          <!-- <div class="absolute top-2 right-2 z-10">
-            <button 
-              (click)="shareVideo(video)" 
-              class="bg-black/60 text-white text-sm px-2 py-1 rounded-full hover:bg-black/80">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-              <path fill-rule="evenodd" d="M19.902 4.098a3.75 3.75 0 0 0-5.304 0l-4.5 4.5a3.75 3.75 0 0 0 1.035 6.037.75.75 0 0 1-.646 1.353 5.25 5.25 0 0 1-1.449-8.45l4.5-4.5a5.25 5.25 0 1 1 7.424 7.424l-1.757 1.757a.75.75 0 1 1-1.06-1.06l1.757-1.757a3.75 3.75 0 0 0 0-5.304Zm-7.389 4.267a.75.75 0 0 1 1-.353 5.25 5.25 0 0 1 1.449 8.45l-4.5 4.5a5.25 5.25 0 1 1-7.424-7.424l1.757-1.757a.75.75 0 1 1 1.06 1.06l-1.757 1.757a3.75 3.75 0 1 0 5.304 5.304l4.5-4.5a3.75 3.75 0 0 0-1.035-6.037.75.75 0 0 1-.354-1Z" clip-rule="evenodd" />
-            </svg>
-            </button>
-          </div> -->
         </div>
       </ng-container>
     </div>
   </div>
-<!-- </div> -->
 
- <!-- Video Full-Screen View (When selected) -->
-<div *ngIf="currentVideo" class="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
-  <div class="relative w-full max-w-4xl rounded-lg overflow-hidden shadow-lg bg-gray-900">
-
-    <!-- Close Button -->
-    <button (click)="currentVideo = null" class="absolute top-4 right-4 text-white text-3xl hover:text-red-400 transition">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
-      </svg>
-    </button>
-
-    <!-- Navigation Buttons -->
-    <button *ngIf="currentVideo" (click)="prevVideo()" class="absolute left-2 top-1/2 transform -translate-y-1/2 text-white text-4xl hover:text-blue-400 transition">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-4.28 9.22a.75.75 0 0 0 0 1.06l3 3a.75.75 0 1 0 1.06-1.06l-1.72-1.72h5.69a.75.75 0 0 0 0-1.5h-5.69l1.72-1.72a.75.75 0 0 0-1.06-1.06l-3 3Z" clip-rule="evenodd" />
-      </svg>
-    </button>
-
-    <button *ngIf="currentVideo" (click)="nextVideo()" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-white text-4xl hover:text-blue-400 transition">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm4.28 10.28a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 1 0-1.06 1.06l1.72 1.72H8.25a.75.75 0 0 0 0 1.5h5.69l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3Z" clip-rule="evenodd" />
-      </svg>
-    </button>
-
-    <!-- Video Player -->
-    <video class="w-full h-[80vh] object-contain" *ngIf="currentVideo?.video_url" controls autoplay>
-      <source [src]="'http://localhost:5000/' + currentVideo.video_url" type="video/mp4" />
-    </video>
-
-  </div>
+  
 </div>

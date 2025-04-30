@@ -24,6 +24,20 @@ export class AchievementsComponent implements OnInit {
     private route: ActivatedRoute,
   ) {}
 
+  openVideoInNewTab(video: any): void {
+    window.open(video.url, '_blank');
+  }
+
+  playAndUnmute(videoRef: HTMLVideoElement): void {
+    videoRef.play();
+    videoRef.muted = false;
+  }
+
+  pauseAndMute(videoRef: HTMLVideoElement): void {
+    videoRef.pause();
+    videoRef.muted = true;
+  }
+
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const tab = params.get('tab') as 'district' | 'state' | 'national';
@@ -75,12 +89,48 @@ export class AchievementsComponent implements OnInit {
   //   );
   // }
 
+  // fetchVideos(tab: 'district' | 'state' | 'national', page: number) {
+  //   const subcategory = tab.charAt(0).toUpperCase() + tab.slice(1);
+  //   this.isLoading = true;
+  
+  //   this.apiService.getAchievements(subcategory, page).subscribe(
+  //     (videos: any[]) => {
+  //       if (tab === 'district') {
+  //         this.videosDistrict = videos;
+  //       } else if (tab === 'state') {
+  //         this.videosState = videos;
+  //       } else if (tab === 'national') {
+  //         this.videosNational = videos;
+  //       }
+  //       this.isLoading = false;
+  //     },
+  //     (error: any) => {
+  //       console.error('Error fetching videos:', error);
+  //       this.toastr.error('Failed to fetch videos. Please try again later.');
+  //       this.isLoading = false;
+  //     }
+  //   );
+  // }
+  
   fetchVideos(tab: 'district' | 'state' | 'national', page: number) {
     const subcategory = tab.charAt(0).toUpperCase() + tab.slice(1);
     this.isLoading = true;
   
     this.apiService.getAchievements(subcategory, page).subscribe(
       (videos: any[]) => {
+        console.log('Fetched videos:', videos);
+  
+        // Loop through videos and clean thumbnail URLs
+        videos.forEach(video => {
+          if (video.thumbnail_url) {
+            // Fix duplicate '/uploads/uploads'
+            const cleanedPath = video.thumbnail_url.replace('/uploads/uploads', '/uploads');
+  
+            // Add backend server URL in front
+            video.thumbnail_url = `http://localhost:5000${cleanedPath}`;
+          }
+        });
+  
         if (tab === 'district') {
           this.videosDistrict = videos;
         } else if (tab === 'state') {
@@ -88,6 +138,7 @@ export class AchievementsComponent implements OnInit {
         } else if (tab === 'national') {
           this.videosNational = videos;
         }
+  
         this.isLoading = false;
       },
       (error: any) => {

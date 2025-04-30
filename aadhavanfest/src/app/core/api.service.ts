@@ -26,6 +26,9 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
   
+  getVideoById(id: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/videos/${id}`);
+  }
 
   // for home
   getLatestVideos(limit: number) {

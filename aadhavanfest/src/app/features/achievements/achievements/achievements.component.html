@@ -23,78 +23,68 @@
     </button>
   </div>
 
-  <!-- Black Card with Videos -->
+  
+  <!-- 🔹 Video Card Container -->
   <div class="bg-black/50 backdrop-blur-lg rounded-2xl p-6 shadow-xl w-full max-w-6xl mx-auto mt-6">
-
-    <!-- Video Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div 
-        *ngFor="let video of (selectedTab === 'district' ? videosDistrict : selectedTab === 'state' ? videosState : videosNational)"
-        class="relative rounded-2xl overflow-hidden backdrop-blur-md bg-black/50 shadow-lg group aspect-video"
-      >
 
-        <!-- Thumbnail or Video -->
-        <div class="relative w-full h-full">
-          <img
-            *ngIf="!video.isPlaying"
-            [src]="'http://localhost:5000/uploads/thumbnails/' + video.thumbnail"
-            alt="Video Thumbnail"
-            class="w-full h-full object-cover"
-          />
-          <video
-            *ngIf="video.isPlaying"
-            [src]="'http://localhost:5000/uploads/videos/' + video.video_url"
-            class="w-full h-full object-cover"
-            controls
-            autoplay
-            muted
-            playsinline
-          ></video>
+       <!-- 🔄 Loop through selected tab videos -->
+       <ng-container *ngIf="selectedTab === 'district' || selectedTab === 'state' || selectedTab === 'national'">
+        <div *ngFor="let video of (selectedTab === 'district' ? videosDistrict : selectedTab === 'state' ? videosState : videosNational)"
+          class="relative bg-white shadow-md rounded-2xl overflow-hidden group aspect-video"> 
+          
+         <!-- 📷 Thumbnail Image -->
+        <img 
+          *ngIf="video.thumbnail_url" 
+          [src]="video.thumbnail_url" 
+          alt="Video thumbnail" 
+          class="absolute w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 sm:block hidden" 
+        />
+<!-- ▶️ Play Button Overlay -->
+<button 
+(click)="openVideoInNewTab(video)"
+class="absolute inset-0 flex items-center justify-center text-white bg-black/40 hover:bg-black/60 transition"
+>
+<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="size-6">
+  <path fill-rule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clip-rule="evenodd"/>
+</svg>
+</button>
 
-          <!-- Play Button -->
-          <button 
-            *ngIf="!video.isPlaying"
-            (click)="playVideo(video)"
-            class="absolute inset-0 flex items-center justify-center text-6xl text-white bg-black/40 hover:bg-black/60 transition"
-          >
-            <i class="fas fa-play-circle"></i>
-          </button>
+<!-- 🖥️ Desktop Hover Preview -->
+<video
+#videoRef
+class="absolute w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300 sm:block hidden"
+loop muted playsinline preload="metadata"
+crossorigin="anonymous"
+(mouseenter)="playAndUnmute(videoRef)" 
+(mouseleave)="pauseAndMute(videoRef)"
+>
+<source [src]="'http://localhost:5000/' + video.video_url" type="video/mp4" />
+</video>
 
-        </div>
+<!-- 📱 Mobile Autoplay -->
+<video
+class="block sm:hidden w-full h-full object-cover pointer-events-none"
+autoplay muted loop playsinline preload="metadata"
+>
+<source [src]="'http://localhost:5000/' + video.video_url" type="video/mp4" />
+</video>
 
-        <!-- Video Title -->
-        <div class="bg-black/70 p-2 text-center">
-          <h3 class="text-white font-semibold text-base truncate">
-            {{ video.title }}
-          </h3>
-        </div>
+<!-- 🕒 Duration Label -->
+<div class="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-md z-10">
+{{ video.duration }}
+</div>
 
-      </div>
-    </div>
+<!-- 📝 Title -->
+<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 z-10">
+<h3 class="text-white font-semibold text-base sm:text-lg truncate">
+  {{ video.title }}
+</h3>
+</div>
+</div>
+</ng-container>
+</div>
+</div>
 
-  </div>
 
-  <!-- Pagination -->
-  <div class="flex justify-center items-center mt-6 space-x-2 text-white">
-    <button 
-      (click)="goToPage(currentPage - 1)" 
-      [disabled]="currentPage === 1" 
-      class="hover:text-red-500">&lt;</button>
-    
-    <button 
-      *ngFor="let page of [].constructor(totalPages); let i = index" 
-      (click)="goToPage(i + 1)"
-      [class.bg-red-500]="i + 1 === currentPage" 
-      [class.text-white]="i + 1 === currentPage" 
-      class="w-8 h-8 rounded-full text-center hover:text-red-500">
-      {{ i + 1 }}
-    </button>
-    
-    <button 
-      (click)="goToPage(currentPage + 1)" 
-      [disabled]="currentPage === totalPages" 
-      class="hover:text-red-500">&gt;</button>
-  </div>
-<!-- FontAwesome Icons -->
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-
+</div>

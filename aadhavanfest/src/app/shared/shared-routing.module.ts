@@ -4,6 +4,7 @@ import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { IntroComponent } from './intro/intro.component';
+import { VideoplayerComponent } from './videoplayer/videoplayer.component';
 
 const routes: Routes = [
   {
@@ -21,7 +22,9 @@ const routes: Routes = [
   {
     path: 'intro',
     component: IntroComponent
-  }
+  },
+  { path: 'video/:id', 
+    component: VideoplayerComponent }
 ];
 @NgModule({
   imports: [RouterModule.forChild(routes)],
