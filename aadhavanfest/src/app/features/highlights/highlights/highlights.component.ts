@@ -17,6 +17,7 @@ export class HighlightsComponent implements OnInit {
   currentVideo: any = null; // Selected video to display in a larger view
 
 
+
   constructor(
     private route: ActivatedRoute,
     private router: Router, 
@@ -34,9 +35,23 @@ export class HighlightsComponent implements OnInit {
     });
   }
 
+
+  // openVideoInNewTab(video: any) {
+  //   this.router.navigate(['/video', video.id]);
+  // }
   openVideoInNewTab(video: any) {
-    this.router.navigate(['/video', video.id]);
+    console.log('Video ID:', video.id);  // Log the ID here
+    if (video && video.video_id) {
+      this.router.navigate(['/video', video.video_id]);
+    } else {
+      console.error('Video ID is missing or undefined:', video);
+    }    
   }
+  
+  
+  
+  
+
 
   playVideo(video: any) {
     video.isPlaying = true;

@@ -26,10 +26,6 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
   
-  getVideoById(id: string): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/videos/${id}`);
-  }
-
   // for home
   getLatestVideos(limit: number) {
     return this.http.get<any[]>(`${this.baseUrl}/videos/highlights?limit=${limit}`);
@@ -85,4 +81,9 @@ getVideosBySubcategory(subcategory: string): Observable<Video[]> {
     );
   }
   
+
+  // navigate to video player
+  getVideoById(id: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/videos/${id}`);
+  }
 }

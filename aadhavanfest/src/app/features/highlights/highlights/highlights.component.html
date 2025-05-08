@@ -1,7 +1,7 @@
-<!-- 🔹 Background Wrapper -->
+<!-- background wrapper -->
 <div class="min-h-screen bg-bg2 bg-cover bg-center -mt-[34px] flex flex-col items-center">
 
-  <!-- 🔹 Tabs -->
+  <!-- tabs -->
   <div class="flex flex-wrap justify-center items-center bg-black/50 backdrop-blur-sm text-white rounded-full px-6 py-3 space-x-4 w-fit mx-auto mt-10">
     <button 
       (click)="selectTab('inside')" 
@@ -18,24 +18,19 @@
     </button>
   </div>
 
-  <!-- 🔹 Video Card Container -->
+  <!--  Video Card Container -->
   <div class="bg-black/50 backdrop-blur-lg rounded-2xl p-6 shadow-xl w-full max-w-6xl mx-auto mt-6">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
-      <!-- 🔄 Loop through selected tab videos -->
+      <!-- Loop through selected tab videos -->
       <ng-container *ngIf="selectedTab === 'inside' || selectedTab === 'outside'">
         <div 
           *ngFor="let video of (selectedTab === 'inside' ? videosInside : videosOutside)"
+          (click)="openVideoInNewTab(video)"
           class="relative bg-white shadow-md rounded-2xl overflow-hidden group aspect-video"
         >
 
-          <!-- 📷 Thumbnail Image -->
-          <!-- <img 
-            *ngIf="video.thumbnail_url" 
-            [src]="video.thumbnail_url" 
-            alt="Video thumbnail" 
-            class="absolute w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 sm:block hidden" 
-          /> -->
+        <!--  Thumbnail Image -->
           <img 
   *ngIf="video.thumbnail_url" 
   [src]="video.thumbnail_url" 
@@ -43,17 +38,17 @@
   class="absolute w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 sm:block hidden" 
 />
 
-          <!-- ▶️ Play Button Overlay -->
+          <!-- Play Button Overlay -->
           <button 
-            (click)="openVideoInNewTab(video)"
-            class="absolute inset-0 flex items-center justify-center text-white bg-black/40 hover:bg-black/60 transition"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="size-6">
-              <path fill-rule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clip-rule="evenodd"/>
-            </svg>
-          </button>
+          class="absolute inset-0 flex items-center justify-center text-white bg-black/40 hover:bg-black/60 transition pointer-events-none"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="size-6">
+            <path fill-rule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clip-rule="evenodd"/>
+          </svg>
+        </button>
+        
 
-          <!-- 🖥️ Desktop Hover Preview -->
+          <!-- Desktop Hover Preview -->
           <video
             #videoRef
             class="absolute w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300 sm:block hidden"
@@ -65,7 +60,7 @@
             <source [src]="'http://localhost:5000/' + video.video_url" type="video/mp4" />
           </video>
 
-          <!-- 📱 Mobile Autoplay -->
+          <!-- Mobile Autoplay -->
           <video
             class="block sm:hidden w-full h-full object-cover pointer-events-none"
             autoplay muted loop playsinline preload="metadata"
@@ -73,12 +68,12 @@
             <source [src]="'http://localhost:5000/' + video.video_url" type="video/mp4" />
           </video>
 
-          <!-- 🕒 Duration Label -->
+          <!-- Duration Label -->
           <div class="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-md z-10">
             {{ video.duration }}
           </div>
 
-          <!-- 📝 Title -->
+          <!-- Title -->
           <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 z-10">
             <h3 class="text-white font-semibold text-base sm:text-lg truncate">
               {{ video.title }}

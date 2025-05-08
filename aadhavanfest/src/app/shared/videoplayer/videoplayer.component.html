@@ -1,9 +1,15 @@
 <div *ngIf="video">
-    <video class="w-full h-[80vh] object-contain" controls autoplay>
-      <source [src]="'http://localhost:5000/' + video.video_url" type="video/mp4" />
-    </video>
-    <div *ngIf="video.title">
-      <h2>{{ video.title }}</h2>
-      <p>{{ video.description }}</p>
-    </div>
-  </div>
+  <h1>{{ video.title }}</h1>
+  <!-- <video controls>
+    <source [src]="video.video_url" type="video/mp4"> 
+    Your browser does not support the video tag.
+  </video> -->
+  <video controls width="640">
+    <source [src]="video.video_url" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  
+  <p>{{ video.description }}</p>
+  <p><strong>Category:</strong> {{ video.categories?.[0] || 'N/A' }}</p> <!-- fix here -->
+  <p><strong>Uploaded by:</strong> Admin ID {{ video.admin_id }}</p> <!-- fix here -->
+</div>
