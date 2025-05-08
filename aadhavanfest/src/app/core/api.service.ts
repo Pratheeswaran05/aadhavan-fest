@@ -37,18 +37,12 @@ export class ApiService {
   
 
   getHighlights(category: string, subcategory: string) {
-    // return this.http.get<any[]>(`${this.apiUrl}/highlights?category=${category}&subcategory=${subcategory}`);
     return this.http.get<Video[]>(`${this.baseUrl}/videos/highlights?category=${category}&subcategory=${subcategory}`).pipe(
       catchError(this.handleError)
     );
    }
 
 
-  // getAchievements(subcategory: string) {
-  //   return this.http.get<Video[]>(`${this.baseUrl}/videos/achievements/${subcategory}`).pipe(
-  //     catchError(this.handleError)
-  //   );
-  // }
   getAchievements(subcategory: string, page: number): Observable<Video[]> {
     return this.http.get<Video[]>(`${this.baseUrl}/videos/achievements/${subcategory}?page=${page}`).pipe(
       catchError(this.handleError)
@@ -84,4 +78,11 @@ getVideosBySubcategory(subcategory: string): Observable<Video[]> {
     console.error('An error occurred:', error);  // Log the error
     throw new Error('Something went wrong while fetching videos. Please try again later.');
   }
+
+  getTotalVideos(): Observable<{ totalVideos: number }> {
+    return this.http.get<{ totalVideos: number }>(`${this.baseUrl}/videos/total`).pipe(
+      catchError(this.handleError)
+    );
+  }
+  
 }
