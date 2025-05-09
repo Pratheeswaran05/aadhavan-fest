@@ -69,14 +69,11 @@ ngOnInit(): void {
 fetchVideoDetails(videoId: string): void {
   // Fetch the video details from your API
   this.apiService.getVideoById(videoId).subscribe((video) => {
-    console.log('Video ID:', video.video_id);  // Should be the ID of the video
-    console.log('Video URL:', video.video_url);  // Should be the video URL, e.g., /uploads/xyz.mp4
-
     // Check if the video URL is relative and convert it to an absolute URL
     if (video.video_url && !video.video_url.startsWith('http')) {
-      video.video_url = `http://localhost:5000${video.video_url}`;
+      video.video_url = 'http://localhost:5000/' + video.video_url.replace(/\\/g, '/');
     }
-
+ 
     // Store the video details
     this.video = video;
   }, (error) => {

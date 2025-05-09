@@ -4,12 +4,11 @@
     <source [src]="video.video_url" type="video/mp4"> 
     Your browser does not support the video tag.
   </video> -->
-  <video controls width="640">
-    <source [src]="video.video_url" type="video/mp4">
+  <video *ngIf="video?.video_url" controls width="720">
+    <source [src]="video.video_url" type="video/mp4" />
     Your browser does not support the video tag.
   </video>
-  
   <p>{{ video.description }}</p>
-  <p><strong>Category:</strong> {{ video.categories?.[0] || 'N/A' }}</p> <!-- fix here -->
-  <p><strong>Uploaded by:</strong> Admin ID {{ video.admin_id }}</p> <!-- fix here -->
+  <p><strong>Category:</strong> {{ video.categories?.[0] || 'N/A' }}</p>
+  <p><strong>Uploaded by:</strong> Admin ID {{ video.admin_id }}</p>
 </div>
